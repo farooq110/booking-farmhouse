@@ -1,0 +1,326 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "swiper/css";
+@import "swiper/css/effect-coverflow";
+@import "swiper/css/pagination";
+@import "swiper/css/navigation";
+
+@custom-variant dark (&:is(.dark *));
+
+/* ============================================================
+   ELIXIR ARENA — Luxury Farmhouse · Material-Design-3-inspired
+   Light, warm, premium. Inspired by the booking-app-admin-portal
+   reference aesthetic but elevated for a country-farm sanctuary.
+   ============================================================ */
+
+@theme inline {
+  /* Surface system — MD3 light surfaces, warmed for farmhouse brand */
+  --color-background: var(--bg);
+  --color-foreground: var(--fg);
+  --color-surface: var(--surface);
+  --color-surface-dim: var(--surface-dim);
+  --color-surface-bright: var(--surface-bright);
+  --color-surface-container-lowest: var(--surface-lowest);
+  --color-surface-container-low: var(--surface-low);
+  --color-surface-container: var(--surface-mid);
+  --color-surface-container-high: var(--surface-high);
+  --color-surface-container-highest: var(--surface-highest);
+  --color-on-surface: var(--on-surface);
+  --color-on-surface-variant: var(--on-surface-variant);
+  --color-outline: var(--outline);
+  --color-outline-variant: var(--outline-variant);
+
+  /* Brand palette */
+  --color-primary: var(--primary);
+  --color-on-primary: var(--on-primary);
+  --color-primary-container: var(--primary-container);
+  --color-on-primary-container: var(--on-primary-container);
+  --color-secondary: var(--secondary);
+  --color-on-secondary: var(--on-secondary);
+  --color-secondary-container: var(--secondary-container);
+  --color-on-secondary-container: var(--on-secondary-container);
+  --color-tertiary: var(--tertiary);
+  --color-on-tertiary: var(--on-tertiary);
+  --color-tertiary-container: var(--tertiary-container);
+  --color-on-tertiary-container: var(--on-tertiary-container);
+  --color-error: var(--error);
+  --color-on-error: var(--on-error);
+
+  /* Brand semantic tokens */
+  --color-moss: var(--moss);
+  --color-moss-deep: var(--moss-deep);
+  --color-clay: var(--clay);
+  --color-cream: var(--cream);
+  --color-amber: var(--amber);
+  --color-amber-soft: var(--amber-soft);
+  --color-charcoal: var(--charcoal);
+
+  /* Legacy compat with shadcn components */
+  --color-card: var(--surface-mid);
+  --color-card-foreground: var(--on-surface);
+  --color-popover: var(--surface-lowest);
+  --color-popover-foreground: var(--on-surface);
+  --color-muted: var(--surface-high);
+  --color-muted-foreground: var(--on-surface-variant);
+  --color-accent: var(--secondary-container);
+  --color-accent-foreground: var(--on-secondary-container);
+  --color-destructive: var(--error);
+  --color-border: var(--outline-variant);
+  --color-input: var(--outline-variant);
+  --color-ring: var(--primary);
+
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-cormorant), ui-serif, Georgia, serif;
+  --font-material: "Material Symbols Outlined";
+
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 8px);
+}
+
+:root {
+  --radius: 0.75rem;
+
+  /* ── MD3 light surface ladder, warmed with a touch of amber ── */
+  --bg: oklch(0.97 0.012 85);                  /* warm cream */
+  --fg: oklch(0.20 0.018 145);                 /* deep moss-charcoal */
+  --surface: oklch(0.985 0.008 85);
+  --surface-dim: oklch(0.93 0.012 85);
+  --surface-bright: oklch(0.99 0.006 85);
+  --surface-lowest: oklch(1 0 0);
+  --surface-low: oklch(0.985 0.008 85);
+  --surface-mid: oklch(0.97 0.012 85);
+  --surface-high: oklch(0.95 0.014 85);
+  --surface-highest: oklch(0.93 0.016 85);
+  --on-surface: oklch(0.20 0.018 145);
+  --on-surface-variant: oklch(0.42 0.020 145);
+  --outline: oklch(0.55 0.018 145);
+  --outline-variant: oklch(0.85 0.014 85);
+
+  /* ── Brand: deep forest moss primary, harvest amber tertiary ── */
+  --primary: oklch(0.42 0.045 145);            /* deep forest moss */
+  --on-primary: oklch(0.98 0.005 85);
+  --primary-container: oklch(0.88 0.04 145);
+  --on-primary-container: oklch(0.22 0.030 145);
+
+  --secondary: oklch(0.55 0.030 60);           /* warm earth */
+  --on-secondary: oklch(0.99 0.005 85);
+  --secondary-container: oklch(0.92 0.025 60);
+  --on-secondary-container: oklch(0.28 0.025 60);
+
+  --tertiary: oklch(0.70 0.13 70);             /* harvest amber gold */
+  --on-tertiary: oklch(0.18 0.012 145);
+  --tertiary-container: oklch(0.92 0.07 75);
+  --on-tertiary-container: oklch(0.30 0.07 70);
+
+  --error: oklch(0.55 0.20 25);
+  --on-error: oklch(0.99 0.005 85);
+
+  /* ── Direct brand tokens ── */
+  --moss: oklch(0.42 0.045 145);
+  --moss-deep: oklch(0.30 0.035 145);
+  --clay: oklch(0.55 0.030 60);
+  --cream: oklch(0.97 0.012 85);
+  --amber: oklch(0.70 0.13 70);
+  --amber-soft: oklch(0.86 0.08 80);
+  --charcoal: oklch(0.20 0.018 145);
+}
+
+@layer base {
+  * { border-color: var(--outline-variant); }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--fg);
+    font-family: var(--font-sans);
+    font-feature-settings: "ss01", "cv11";
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-display);
+    font-weight: 500;
+    letter-spacing: -0.015em;
+  }
+
+  /* Visible keyboard focus everywhere */
+  :where(a, button, input, select, textarea, [tabindex]):focus-visible {
+    outline: 2px solid var(--primary);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+
+  ::selection {
+    background: var(--tertiary-container);
+    color: var(--on-tertiary-container);
+  }
+
+  ::-webkit-scrollbar { width: 10px; height: 10px; }
+  ::-webkit-scrollbar-track { background: var(--surface-dim); }
+  ::-webkit-scrollbar-thumb {
+    background: var(--outline-variant);
+    border-radius: 6px;
+    border: 2px solid var(--surface-dim);
+  }
+  ::-webkit-scrollbar-thumb:hover { background: var(--outline); }
+
+  .material-symbols-outlined {
+    font-family: var(--font-material);
+    font-weight: normal;
+    font-style: normal;
+    font-size: 24px;
+    line-height: 1;
+    letter-spacing: normal;
+    text-transform: none;
+    display: inline-block;
+    white-space: nowrap;
+    word-wrap: normal;
+    direction: ltr;
+    -webkit-font-feature-settings: "liga";
+    -webkit-font-smoothing: antialiased;
+    font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24;
+  }
+}
+
+@layer utilities {
+  .font-display { font-family: var(--font-display); }
+  .font-sans { font-family: var(--font-sans); }
+  .font-material { font-family: var(--font-material); }
+
+  .text-balance { text-wrap: balance; }
+  .text-pretty { text-wrap: pretty; }
+
+  /* Subtle paper-grain overlay */
+  .grain-overlay::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.4'/%3E%3C/svg%3E");
+    opacity: 0.03;
+    mix-blend-mode: multiply;
+  }
+
+  /* MD3 elevation tiers */
+  .elevation-1 {
+    box-shadow:
+      0 1px 2px 0 oklch(0.20 0.018 145 / 0.06),
+      0 1px 3px 0 oklch(0.20 0.018 145 / 0.04);
+  }
+  .elevation-2 {
+    box-shadow:
+      0 1px 2px 0 oklch(0.20 0.018 145 / 0.08),
+      0 4px 8px 0 oklch(0.20 0.018 145 / 0.06);
+  }
+  .elevation-3 {
+    box-shadow:
+      0 2px 4px 0 oklch(0.20 0.018 145 / 0.08),
+      0 8px 16px 0 oklch(0.20 0.018 145 / 0.10);
+  }
+  .elevation-4 {
+    box-shadow:
+      0 4px 8px 0 oklch(0.20 0.018 145 / 0.10),
+      0 16px 32px 0 oklch(0.20 0.018 145 / 0.12);
+  }
+
+  /* MD3 state-layer hover */
+  .state-layer {
+    position: relative;
+    overflow: hidden;
+  }
+  .state-layer::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: currentColor;
+    opacity: 0;
+    transition: opacity 200ms ease;
+    pointer-events: none;
+  }
+  .state-layer:hover::before { opacity: 0.08; }
+  .state-layer:active::before { opacity: 0.12; }
+
+  .gold-divider {
+    height: 1px;
+    background: linear-gradient(90deg, transparent 0%, oklch(0.70 0.13 70 / 0.5) 50%, transparent 100%);
+  }
+  .moss-divider {
+    height: 1px;
+    background: linear-gradient(90deg, transparent 0%, oklch(0.42 0.045 145 / 0.4) 50%, transparent 100%);
+  }
+
+  .text-gold-gradient {
+    background: linear-gradient(135deg, oklch(0.78 0.12 70) 0%, oklch(0.62 0.14 60) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .text-moss-gradient {
+    background: linear-gradient(135deg, oklch(0.42 0.045 145) 0%, oklch(0.32 0.04 150) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .tracking-luxe { letter-spacing: 0.28em; }
+  .tracking-wide-luxe { letter-spacing: 0.18em; }
+
+  /* Swiper overrides for luxury feel */
+  .swiper-slide { height: auto; }
+
+  /* Pagination — rendered as a custom external element below each slider.
+     Override Swiper's default absolute positioning so bullets flow inline. */
+  .swiper-pagination {
+    position: relative !important;
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    transform: none !important;
+  }
+  .swiper-pagination-bullet {
+    background: var(--on-surface-variant);
+    opacity: 0.3;
+    width: 8px;
+    height: 8px;
+    margin: 0 !important;
+    border-radius: 9999px;
+    transition: all 200ms ease;
+    cursor: pointer;
+  }
+  .swiper-pagination-bullet-active {
+    background: var(--primary);
+    opacity: 1;
+    width: 24px;
+    border-radius: 4px;
+  }
+  .swiper-button-next, .swiper-button-prev {
+    color: var(--primary);
+    background: var(--surface-lowest);
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    box-shadow: 0 2px 8px oklch(0.20 0.018 145 / 0.12);
+  }
+  .swiper-button-next::after, .swiper-button-prev::after {
+    font-size: 18px;
+    font-weight: 700;
+  }
+  .swiper-button-disabled {
+    opacity: 0.35 !important;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
