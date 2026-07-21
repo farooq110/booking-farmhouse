@@ -1,32 +1,44 @@
 /**
  * Centralized media registry for Country Farm.
- *
- * Every image and video URL used in the marketing site lives here. To swap
- * an asset, change one line. Images are served from /public/images/ (Next.js).
+ * All local images use STATIC IMPORTS so next/image auto-fills
+ * width/height/blurDataURL.
  */
 
+import heroCover from "../../public/images/hero-cover.jpg";
+import swimmingPool from "../../public/images/swimming-pool.jpg";
+import park from "../../public/images/park.jpg";
+import kidPlaying from "../../public/images/kid-playing.jpg";
+import sportsRoom from "../../public/images/sports-room.jpg";
+import slider1 from "../../public/images/slider-1.jpg";
+import slider2 from "../../public/images/slider-2.jpg";
+import slider3 from "../../public/images/slider-3.jpg";
+import slider4 from "../../public/images/slider-4.jpg";
+import slider5 from "../../public/images/slider-5.jpg";
+import slider6 from "../../public/images/slider-6.jpg";
+import slider8 from "../../public/images/slider-8.jpg";
+import slider9 from "../../public/images/slider-9.jpg";
+import slider10 from "../../public/images/slider-10.jpg";
+import slider11 from "../../public/images/slider-11.jpg";
+
 function getFarmhousePhone(): string {
-  // Next.js: process.env.NEXT_PUBLIC_FARMHOUSE_PHONE
   if (typeof process !== "undefined" && process.env?.NEXT_PUBLIC_FARMHOUSE_PHONE) {
     return process.env.NEXT_PUBLIC_FARMHOUSE_PHONE;
   }
-  return "+9203111227717"; // fallback
+  return "+9203111227717";
 }
 
 function getFarmhouseEmail(): string {
-  // Next.js: process.env.NEXT_PUBLIC_FARMHOUSE_EMAIL
   if (typeof process !== "undefined" && process.env?.NEXT_PUBLIC_FARMHOUSE_EMAIL) {
     return process.env.NEXT_PUBLIC_FARMHOUSE_EMAIL;
   }
-  return "hello@countryfarm.pk"; // fallback
+  return "hello@countryfarm.pk";
 }
 
 function getFarmhouseAddress(): string {
-  // Next.js: process.env.NEXT_PUBLIC_FARMHOUSE_ADDRESS
   if (typeof process !== "undefined" && process.env?.NEXT_PUBLIC_FARMHOUSE_ADDRESS) {
     return process.env.NEXT_PUBLIC_FARMHOUSE_ADDRESS;
   }
-  return "7, 8 Deh Mehran, near Malir Cantt Check Post No 3, Malir Cantonment, Karachi, 75070, Pakistan"; // fallback
+  return "7, 8 Deh Mehran, near Malir Cantt Check Post No 3, Malir Cantonment, Karachi, 75070, Pakistan";
 }
 
 const phone = getFarmhousePhone();
@@ -40,128 +52,62 @@ export const FARMHOUSE = {
   email,
   emailHref: `mailto:${email}`,
   address,
-  // Google Maps embed URL (no API key required — uses the public embed endpoint)
   mapsEmbed:
     "https://www.google.com/maps?q=Malir%20Cantt%20Check%20Post%20No%203%2C%20Karachi%2C%20Pakistan&output=embed",
   mapsLink:
     "https://www.google.com/maps/search/?api=1&query=Malir+Cantt+Check+Post+No+3+Karachi+Pakistan",
 } as const;
 
-/**
- * Booking API configuration.
- *
- * The API base URL can be overridden via NEXT_PUBLIC_API_BASE_URL.
- * Defaults to production API for live deployments.
- *
- * serviceId is the default service offered at Country Farm. Must be the
- * MongoDB ObjectId (_id) returned by your backend when you create the service.
- * Override via NEXT_PUBLIC_DEFAULT_SERVICE_ID.
- */
 function getApiBaseUrl(): string {
-  // Next.js: process.env.NEXT_PUBLIC_API_BASE_URL (inlined at build time)
   if (typeof process !== "undefined" && process.env?.NEXT_PUBLIC_API_BASE_URL) {
     return process.env.NEXT_PUBLIC_API_BASE_URL;
   }
-  return ""; // Must be set via NEXT_PUBLIC_API_BASE_URL env variable
+  return "";
 }
 
 function getDefaultServiceId(): string {
-  // Next.js: process.env.NEXT_PUBLIC_DEFAULT_SERVICE_ID
   if (typeof process !== "undefined" && process.env?.NEXT_PUBLIC_DEFAULT_SERVICE_ID) {
     return process.env.NEXT_PUBLIC_DEFAULT_SERVICE_ID;
   }
-  return ""; // No safe default — must be set in env or passed explicitly
+  return "";
 }
 
 export const API_CONFIG = {
   baseUrl: getApiBaseUrl(),
   defaultServiceId: getDefaultServiceId(),
-  /**
-   * When true, the API client skips all network requests and returns
-   * realistic dummy data instead. Useful for:
-   *  - Demos without a backend
-   *  - Local development when the API isn't running
-   *  - Preview deployments where the API isn't reachable
-   *
-   * Set to false for production with real backend.
-   */
   useMockData: false,
 } as const;
 
 export const MEDIA = {
   hero: {
-    cover: "/images/hero-cover.jpg",
-    poster: "/images/hero-cover.jpg",
+    cover: heroCover,
+    poster: heroCover,
     videoSrc: undefined as string | undefined,
   },
   estate: {
-    pool: "/images/swimming-pool.jpg",
-    park: "/images/park.jpg",
-    pavilion: "/images/slider-6.jpg",
+    pool: swimmingPool,
+    park: park,
+    pavilion: slider6,
   },
   facilities: {
-    kids: "/images/kid-playing.jpg",
-    gaming: "/images/sports-room.jpg",
-    sports: "/images/park.jpg",
+    kids: kidPlaying,
+    gaming: sportsRoom,
+    sports: park,
   },
   gallery: [
-    {
-      src: "/images/slider-1.jpg",
-      alt: "Country Farm — exterior view",
-      caption: "The estate · exterior",
-    },
-    {
-      src: "/images/slider-2.jpg",
-      alt: "Country Farm — garden perspective",
-      caption: "Garden · perspective",
-    },
-    {
-      src: "/images/slider-3.jpg",
-      alt: "Country Farm — interior pavilion",
-      caption: "Pavilion · interior",
-    },
-    {
-      src: "/images/slider-6.jpg",
-      alt: "Country Farm — air-conditioned glass pavilion",
-      caption: "Glass pavilion · AC",
-    },
-    {
-      src: "/images/slider-8.jpg",
-      alt: "Country Farm — grounds at golden hour",
-      caption: "Grounds · golden hour",
-    },
-    {
-      src: "/images/slider-9.jpg",
-      alt: "Country Farm — evening ambiance",
-      caption: "Evening · ambiance",
-    },
-    {
-      src: "/images/slider-10.jpg",
-      alt: "Country Farm — quiet corner of the estate",
-      caption: "Quiet corner · estate",
-    },
-    {
-      src: "/images/slider-11.jpg",
-      alt: "Country Farm — landscape detail",
-      caption: "Landscape · detail",
-    },
+    { src: slider1, alt: "Country Farm — exterior view", caption: "The estate · exterior" },
+    { src: slider2, alt: "Country Farm — garden perspective", caption: "Garden · perspective" },
+    { src: slider3, alt: "Country Farm — interior pavilion", caption: "Pavilion · interior" },
+    { src: slider6, alt: "Country Farm — air-conditioned glass pavilion", caption: "Glass pavilion · AC" },
+    { src: slider8, alt: "Country Farm — grounds at golden hour", caption: "Grounds · golden hour" },
+    { src: slider9, alt: "Country Farm — evening ambiance", caption: "Evening · ambiance" },
+    { src: slider10, alt: "Country Farm — quiet corner of the estate", caption: "Quiet corner · estate" },
+    { src: slider11, alt: "Country Farm — landscape detail", caption: "Landscape · detail" },
   ],
   videos: [
-    {
-      label: "Farmhouse walk-through · exterior + grounds",
-      src: undefined as string | undefined,
-      poster: "/images/slider-1.jpg",
-    },
-    {
-      label: "Sunrise over the estate",
-      src: undefined as string | undefined,
-      poster: "/images/slider-8.jpg",
-    },
-    {
-      label: "Evening on the deck",
-      src: undefined as string | undefined,
-      poster: "/images/slider-9.jpg",
-    },
+    { label: "Farmhouse walk-through · exterior + grounds", src: undefined as string | undefined, poster: slider1 },
+    { label: "Sunrise over the estate", src: undefined as string | undefined, poster: slider8 },
+    { label: "Evening on the deck", src: undefined as string | undefined, poster: slider9 },
   ],
 } as const;
 

@@ -1,28 +1,23 @@
 "use client";
 import { MediaSlot } from "./media-slot";
 
+function asUrl(
+  v?: string | { src: string; width: number; height: number; blurDataURL?: string }
+): string | undefined {
+  if (!v) return undefined;
+  if (typeof v === "string") return v;
+  return v.src;
+}
+
 export interface VideoSlotProps {
-  /** CDN URL for the cinematic loop — swap in your real .mp4/.webm here */
   src?: string;
-  poster?: string;
+  poster?: string | { src: string; width: number; height: number; blurDataURL?: string };
   className?: string;
-  /** Show a play icon hint */
   showPlayHint?: boolean;
 }
 
-/**
- * VideoSlot — dedicated structural slot for the hero background video loop
- * and any cinematic video carousel placeholders elsewhere on the page.
- *
- * Without a src it renders a slow-shimmer cream placeholder so the
- * page still feels alive in dev. With a src it lazy-mounts a muted,
- * autoplaying, looping video that respects prefers-reduced-motion.
- */
 export function VideoSlot({
-  src,
-  poster,
-  className = "",
-  showPlayHint = false,
+  src, poster, className = "", showPlayHint = false,
 }: VideoSlotProps) {
   if (!src) {
     return (
@@ -45,22 +40,18 @@ export function VideoSlot({
             movie
           </span>
           <span className="font-display text-lg text-on-surface-variant/50 tracking-wide-luxe">
-            Elixir Arena
+            Country Farm
           </span>
         </div>
       </div>
     );
   }
-
   return (
     <div className={`relative overflow-hidden ${className}`}>
       <video
         className="absolute inset-0 h-full w-full object-cover"
-        autoPlay
-        muted
-        loop
-        playsInline
-        poster={poster}
+        autoPlay muted loop playsInline
+        poster={asUrl(poster)}
       >
         <source src={src} type="video/mp4" />
       </video>
@@ -77,26 +68,6 @@ export function VideoSlot({
         </div>
       )}
       <div className="absolute inset-0 bg-gradient-to-b from-charcoal/10 via-transparent to-charcoal/40" />
-    </div>
-  );
-}
-
-/** Video carousel cell — same visual language as VideoSlot but labelled. */
-export function VideoCarouselCell({
-  src,
-  label,
-  poster,
-}: {
-  src?: string;
-  label: string;
-  poster?: string;
-}) {
-  return (
-    <div className="relative aspect-video overflow-hidden rounded-2xl elevation-2">
-      <VideoSlot src={src} poster={poster} showPlayHint={!!src} className="h-full w-full" />
-      <div className="absolute bottom-3 left-4 z-10">
-        <span className="font-display text-lg text-on-surface">{label}</span>
-      </div>
     </div>
   );
 }

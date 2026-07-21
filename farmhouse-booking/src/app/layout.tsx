@@ -1,20 +1,8 @@
 import type { Metadata } from "next";
-import { Inter, Cormorant_Garamond } from "next/font/google";
+import { fontClassNames } from "@/lib/fonts";
 import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
-
-const inter = Inter({
-  variable: "--font-inter",
-  subsets: ["latin"],
-  display: "swap",
-});
-
-const cormorant = Cormorant_Garamond({
-  variable: "--font-cormorant",
-  subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700"],
-  display: "swap",
-});
+import { ThemedAppLoader } from "@/components/ui/themed-loader";
 
 export const metadata: Metadata = {
   title: "Country Farm — A Private Farmhouse in Malir Cantonment, Karachi",
@@ -60,10 +48,11 @@ export default function RootLayout({
         />
       </head>
       <body
-        className={`${inter.variable} ${cormorant.variable} antialiased bg-background text-foreground`}
+        className={`${fontClassNames} antialiased bg-background text-foreground`}
       >
         {children}
         <Toaster />
+        <ThemedAppLoader />
       </body>
     </html>
   );

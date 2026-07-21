@@ -88,8 +88,12 @@ export function EnquireNow() {
             </div>
           </div>
 
-          {/* ── Right column: the form ── */}
-          <div className="min-w-0">
+          {/* ── Right column: the form ──
+              id="booking-form" is the scroll target for the header's
+              "Booking Slots" button — it lands ON the form (not the
+              "Tell the owner" pitch on the left).
+              scroll-mt-24 clears the sticky header (h-16 = 4rem + 8px). */}
+          <div id="booking-form" className="min-w-0 scroll-mt-24">
             <GuestEnquiryForm />
           </div>
         </div>

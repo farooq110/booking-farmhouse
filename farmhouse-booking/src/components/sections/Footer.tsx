@@ -7,7 +7,7 @@ const NAV_LINKS = [
   { label: "Gallery", href: "#gallery" },
   { label: "Videos", href: "#videos" },
   { label: "Location", href: "#location" },
-  { label: "Enquire", href: "#enquire-now" },
+  { label: "Enquire", href: "#booking-form" },
 ];
 
 const SOCIALS = [

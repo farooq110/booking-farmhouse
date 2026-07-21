@@ -81,7 +81,7 @@ export function Gallery() {
             >
               {MEDIA.gallery.map((img, idx) => (
                 <SwiperSlide
-                  key={img.src}
+                  key={img.caption ?? `gallery-${idx}`}
                   style={{ width: "min(380px, 80vw)" }}
                 >
                   <figure className="group relative overflow-hidden rounded-3xl bg-surface-container-low elevation-2">

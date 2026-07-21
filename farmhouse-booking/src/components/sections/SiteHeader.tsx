@@ -23,8 +23,11 @@ export function SiteHeader() {
   }, []);
 
   const scrollToForm = () => {
+    // Scroll to the form itself (right column), not the section's left
+    // column ("Tell the owner when you'd like to arrive" pitch). On mobile
+    // (single-column layout) this also lands on the form, skipping the pitch.
     document
-      .getElementById("enquire-now")
+      .getElementById("booking-form")
       ?.scrollIntoView({ behavior: "smooth", block: "start" });
   };
 

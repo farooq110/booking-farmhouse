@@ -1,8 +1,8 @@
 "use client";
-import { useEffect, useMemo, useRef } from "react";
+import { useEffect, useRef } from "react";
 import * as THREE from "three";
-import { buildWindmill, type WindmillBuildResult } from "@/lib/three/windmillGeometry";
 import { useFrame } from "@react-three/fiber";
+import { useWindmillWorker } from "@/lib/three/windmillGeometryClient";
 
 interface WindmillProps {
   /** Continuous spin speed of the blades in radians per second */
@@ -14,56 +14,47 @@ interface WindmillProps {
 /**
  * Procedural Farmhouse Windmill — hero background decoration.
  *
- * The blades spin continuously around the hub (the signature motion).
- * That's it — no scroll-jacking, no traveling, no parallax. Just a
- * slowly spinning windmill that lives in the hero background.
+ * HEAVY WORK OFFLOADED:
+ *   The windmill geometry is built in a Web Worker
+ *   (src/workers/windmillGeometry.worker.ts) using buildWindmillData()
+ *   — pure math, no Three.js objects. The worker posts back the
+ *   serialized vertex/index arrays (Transferable typed arrays — zero
+ *   copy) and the main thread reconstructs THREE.BufferGeometry +
+ *   Material + Mesh via buildWindmillFromData().
  *
- * Implementation note: the blades group is found at runtime by scanning
- * the windmill.group's children for the sub-group that contains the
- * lattice sail meshes. This avoids needing to thread a ref through the
- * primitive's children manually.
+ *   This means the main thread never runs the heavy geometry math; only
+ *   the cheap Three.js object instantiation.
+ *
+ *   If the worker is unavailable (SSR, old browser), the hook falls
+ *   back to running buildWindmill() synchronously on the main thread.
  */
 export function Windmill({ spinSpeed = 0.5, reduced = false }: WindmillProps) {
   const groupRef = useRef<THREE.Group>(null);
   const bladesRef = useRef<THREE.Group>(null);
 
-  // Build the windmill geometry once
-  const windmill = useMemo<WindmillBuildResult>(() => buildWindmill(), []);
+  const { result, status } = useWindmillWorker();
 
   useEffect(() => {
-    return () => windmill.dispose();
-  }, [windmill]);
+    if (result?.blades) {
+      bladesRef.current = result.blades;
+    }
+    return () => {
+      result?.dispose();
+    };
+  }, [result]);
 
   useFrame((_, delta) => {
     const b = bladesRef.current;
     if (!b) return;
-
-    // Blades always spin — this is the signature continuous rotation
     b.rotation.z += spinSpeed * delta;
-
-    // Reduced motion: also dampen the windmill's vertical bob (handled by
-    // parent Float in the scene, not here)
-    if (reduced) {
-      // No additional animation in reduced mode
-      return;
-    }
+    if (reduced) return;
   });
+
+  if (status !== "ready" || !result) return null;
 
   return (
     <group ref={groupRef}>
-      <primitive
-        object={windmill.group}
-        ref={(node: THREE.Group | null) => {
-          if (node) {
-            // Find the blades child group (it's the one with > 3 children —
-            // the spar, sail, and 5 cross-pieces)
-            const bladesChild = node.children.find(
-              (c) => c.type === "Group" && c.children.length > 3
-            );
-            if (bladesChild) bladesRef.current = bladesChild as THREE.Group;
-          }
-        }}
-      />
+      <primitive object={result.group} />
     </group>
   );
 }

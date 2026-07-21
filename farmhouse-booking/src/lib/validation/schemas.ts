@@ -15,10 +15,27 @@ export const guestEnquirySchema = z.object({
   // These fields are sent to the POST /bookings endpoint.
   // Note: serviceId is now applied from environment variable (NEXT_PUBLIC_DEFAULT_SERVICE_ID)
 
-  // Single date the guest wants to book (maps to API `date` field)
+  // Single date the guest wants to book (maps to API `date` field).
+  // Schema-level guard: reject past dates so the form is safe even if
+  // someone removes the `min` attribute from the input.
   bookingDate: z
     .string()
-    .min(1, "Please pick a date to see available slots."),
+    .min(1, "Please pick a date to see available slots.")
+    .refine(
+      (val) => {
+        const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(val);
+        if (!m) return false;
+        const [, y, mo, d] = m;
+        const picked = new Date(Number(y), Number(mo) - 1, Number(d));
+        if (Number.isNaN(picked.getTime())) return false;
+        const today = new Date();
+        const todayMidnight = new Date(
+          today.getFullYear(), today.getMonth(), today.getDate()
+        );
+        return picked.getTime() >= todayMidnight.getTime();
+      },
+      "Please pick today or a future date — past dates cannot be booked."
+    ),
 
   // Specific slot from the calendar API (maps to API `slot.start` + `slot.end`)
   // Stored as "start-end" string, e.g. "09:00-10:00"

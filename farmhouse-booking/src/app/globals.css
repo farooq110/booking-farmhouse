@@ -324,3 +324,118 @@
     }
   }
 }
+
+
+/* ============================================================
+   View Transitions API — reduced-motion guard
+   Refs: https://nextjs.org/docs/app/guides/view-transitions
+   ============================================================ */
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none !important;
+    animation-duration: 0.01ms !important;
+    animation-delay: 0ms !important;
+  }
+}
+
+/* ============================================================
+   Themed app loader — shown until first paint is hydrated.
+   See src/components/ui/themed-loader.tsx
+   ============================================================ */
+@keyframes cf-loader-pulse {
+  0%, 100% { opacity: 0.55; transform: scale(0.92); }
+  50%      { opacity: 1;    transform: scale(1); }
+}
+
+@keyframes cf-loader-spin {
+  to { transform: rotate(360deg); }
+}
+
+.cf-app-loader {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg, oklch(0.18 0.012 145));
+  color: var(--cream, oklch(0.96 0.005 95));
+  transition: opacity 360ms ease-out, visibility 360ms ease-out;
+}
+
+.cf-app-loader.is-hidden {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.cf-app-loader__mark {
+  position: relative;
+  display: inline-flex;
+  height: 4rem;
+  width: 4rem;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+  background: oklch(0.78 0.13 80 / 0.12);
+  color: oklch(0.78 0.13 80);
+  animation: cf-loader-pulse 1.6s ease-in-out infinite;
+}
+
+.cf-app-loader__mark::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 9999px;
+  border: 2px solid oklch(0.78 0.13 80 / 0.4);
+  border-top-color: transparent;
+  animation: cf-loader-spin 1.2s linear infinite;
+}
+
+.cf-app-loader__label {
+  margin-top: 1.25rem;
+  font-family: var(--font-cormorant), ui-serif, Georgia, serif;
+  font-size: 1rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: oklch(0.86 0.08 80);
+  opacity: 0.85;
+}
+
+/* ============================================================
+   Image loader — shown over any <OptimizedImage> while it loads.
+   Reusable, single-source. Uses the same brand palette as the
+   ThemedAppLoader (src/components/ui/themed-loader.tsx) but a smaller
+   inline variant.
+   ============================================================ */
+.cf-img-loader {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: oklch(0.78 0.13 80 / 0.06);
+  pointer-events: none;
+  transition: opacity 300ms ease-out;
+}
+
+.cf-img-loader__mark {
+  position: relative;
+  display: inline-block;
+  height: 1.75rem;
+  width: 1.75rem;
+  border-radius: 9999px;
+  border: 2px solid oklch(0.78 0.13 80 / 0.25);
+  border-top-color: oklch(0.78 0.13 80 / 0.9);
+  animation: cf-loader-spin 1.2s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cf-img-loader__mark {
+    animation: none;
+    border-top-color: oklch(0.78 0.13 80 / 0.5);
+  }
+}

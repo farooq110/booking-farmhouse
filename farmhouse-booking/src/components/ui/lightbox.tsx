@@ -3,9 +3,11 @@ import { useEffect, useState, useCallback, useSyncExternalStore } from "react";
 import { createPortal } from "react-dom";
 import { Icon } from "./luxury-primitives";
 import { cn } from "@/lib/utils";
+import { OptimizedImage } from "@/lib/images";
 
 export interface LightboxItem {
-  src: string;
+  /** Static import OR string URL — passed straight to next/image */
+  src: string | { src: string; width: number; height: number; blurDataURL?: string };
   alt: string;
   caption?: string;
 }
@@ -109,15 +111,19 @@ export function Lightbox({ items, index, onClose, onNavigate }: LightboxProps) {
         </button>
       )}
 
-      {/* Image */}
+      {/* Image — uses OptimizedImage (next/image) for AVIF/WebP */}
       <figure
-        className="relative max-h-[88vh] max-w-[90vw] animate-in zoom-in-95 duration-200"
+        className="relative animate-in zoom-in-95 duration-200"
+        style={{ width: "min(90vw, 1200px)", height: "min(88vh, 800px)" }}
         onClick={(e) => e.stopPropagation()}
       >
-        <img
+        <OptimizedImage
           src={current.src}
           alt={current.alt}
-          className="mx-auto max-h-[88vh] max-w-[90vw] rounded-lg object-contain elevation-4"
+          fill
+          eager
+          sizes="(max-width: 768px) 90vw, 1200px"
+          className="object-contain rounded-lg elevation-4"
         />
         {current.caption && (
           <figcaption className="mt-4 text-center font-display text-lg text-cream/85">

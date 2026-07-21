@@ -15,6 +15,7 @@ import {
   SelectContent,
   SelectItem,
 } from "@/components/ui/select";
+import { BookingDatePicker } from "@/components/ui/booking-date-picker";
 import { CTAButton, Icon } from "@/components/ui/luxury-primitives";
 import {
   guestEnquirySchema,
@@ -28,6 +29,19 @@ import {
 import { getCalendar, createBooking } from "@/lib/api/client";
 import { API_CONFIG } from "@/data/media";
 import type { AvailabilitySlot } from "@/types/api";
+
+/**
+ * Today's date in YYYY-MM-DD (the format the date picker expects).
+ * Used to disable past dates in the booking date field.
+ */
+function getTodayISO(): string {
+  const now = new Date();
+  const yyyy = now.getFullYear();
+  const mm = String(now.getMonth() + 1).padStart(2, "0");
+  const dd = String(now.getDate()).padStart(2, "0");
+  return `${yyyy}-${mm}-${dd}`;
+}
+const todayISO = getTodayISO();
 
 /**
  * GuestEnquiryForm — inline form (NOT a modal) for guests to book a stay.
@@ -66,9 +80,13 @@ export function GuestEnquiryForm() {
     reset,
     setValue,
     control,
-    formState: { errors, isSubmitting },
+    formState: { errors, isSubmitting, isValid },
   } = useForm<GuestEnquiryValues>({
     resolver: zodResolver(guestEnquirySchema),
+    // Validate on every change so `isValid` updates live — drives the
+    // disabled state of the submit button until all required fields are
+    // filled AND the house rules checkbox is checked.
+    mode: "onChange",
     defaultValues: {
       bookingDate: "",
       slot: "",
@@ -89,6 +107,19 @@ export function GuestEnquiryForm() {
   const addons = useWatch({ control, name: "addons" }) ?? [];
   const agreeToHouseRules = useWatch({ control, name: "agreeToHouseRules" }) ?? false;
   const bookingDate = useWatch({ control, name: "bookingDate" });
+  const slot = useWatch({ control, name: "slot" }) ?? "";
+  const guestName = useWatch({ control, name: "guestName" }) ?? "";
+  const email = useWatch({ control, name: "email" }) ?? "";
+
+  // ── Submit button enable rule ──
+  // Disabled until ALL of: required fields filled, house rules checked,
+  // not currently submitting, not currently fetching slots.
+  // `isValid` covers the Zod schema (date format + future check + email
+  // format + min name length + house rules checked).
+  const canSubmit =
+    isValid &&
+    !isSubmitting &&
+    !slotsLoading;
 
   // ── Fetch calendar when serviceId + bookingDate change ──
   // The API client always resolves — it falls back to dummy data if the
@@ -162,8 +193,31 @@ export function GuestEnquiryForm() {
       toast.success(
         `Booking confirmed! Reference: ${booking.data?._id ?? "pending"}. The owner will be in touch within 24 hours.`
       );
+
+      // ── Full reset: form values, errors, validation state, AND all
+      // related component state (slots, errors, loading flags). ──
+      // `reset()` clears: form values, errors, isValid (back to false),
+      // touched fields, dirty state. Default values are reapplied.
+      reset({
+        bookingDate: "",
+        slot: "",
+        guestName: "",
+        email: "",
+        phone: "",
+        notes: "",
+        checkIn: "",
+        checkOut: "",
+        guests: 2,
+        timeSlot: "full-day",
+        occasion: "holiday",
+        addons: [],
+        agreeToHouseRules: false,
+      });
+      setAvailableSlots([]);
+      setSlotsError(null);
+      setSlotsLoading(false);
+      setBookingError(null);
       setSubmitted(true);
-      reset();
     } catch (err: unknown) {
       const technicalError = err instanceof Error ? err.message : "Unknown error";
       console.error("[Country Farm] Booking failed:", technicalError);
@@ -188,8 +242,9 @@ export function GuestEnquiryForm() {
           size="md"
           className="mt-6"
           onClick={() => {
+            // Form + all related state was already cleared on submit.
+            // Just hide the confirmation screen to reveal the empty form.
             setSubmitted(false);
-            setAvailableSlots([]);
           }}
         >
           <Icon name="refresh" className="text-base" />
@@ -235,11 +290,11 @@ export function GuestEnquiryForm() {
         </Field> */}
 
         <Field label="Booking date" error={errors.bookingDate?.message}>
-          <Input
-            type="date"
-            {...register("bookingDate")}
-            className="border-outline-variant bg-surface-container-low text-on-surface"
-            aria-invalid={!!errors.bookingDate}
+          <BookingDatePicker
+            value={bookingDate}
+            onChange={(val) => setValue("bookingDate", val, { shouldValidate: true })}
+            min={todayISO}
+            error={errors.bookingDate?.message}
           />
         </Field>
 
@@ -532,11 +587,18 @@ export function GuestEnquiryForm() {
           </span>{" "}
           Your booking goes <strong className="text-on-surface">directly to the owner</strong> — no middleman, no booking fee.
         </p>
-        <CTAButton 
-          type="submit" 
-          size="lg" 
-          disabled={isSubmitting || slotsLoading}
-          className={isSubmitting ? "opacity-90" : ""}
+        <CTAButton
+          type="submit"
+          size="lg"
+          disabled={!canSubmit}
+          className={!canSubmit ? "opacity-60 cursor-not-allowed" : ""}
+          title={
+            !isValid
+              ? "Fill in all required fields and agree to the house rules to enable submit"
+              : isSubmitting
+                ? "Sending your booking…"
+                : "Send your booking to the owner"
+          }
         >
           {isSubmitting ? (
             <>

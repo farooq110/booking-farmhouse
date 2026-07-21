@@ -1,4 +1,5 @@
 "use client";
+import type { StaticImageData } from "next/image";
 import { MediaSlot } from "@/components/ui/media-slot";
 import { SectionHeading, SectionLabel } from "@/components/ui/luxury-primitives";
 import { MEDIA } from "@/data/media";
@@ -8,7 +9,7 @@ interface Facility {
   icon: string;
   title: string;
   body: string;
-  img: string;
+  img: StaticImageData | string;
   highlights: string[];
 }
 

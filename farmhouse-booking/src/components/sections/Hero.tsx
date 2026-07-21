@@ -1,5 +1,6 @@
 "use client";
 import { SectionLabel, Icon } from "@/components/ui/luxury-primitives";
+import { OptimizedImage } from "@/lib/images";
 import { MEDIA, FARMHOUSE } from "@/data/media";
 
 export function Hero() {
@@ -8,13 +9,16 @@ export function Hero() {
       id="hero"
       className="relative isolate flex min-h-[100svh] flex-col items-center justify-center overflow-hidden"
     >
-      {/* Beautiful farmhouse cover image (full-bleed background) */}
+      {/* Beautiful farmhouse cover image (full-bleed background).
+          Uses OptimizedImage (next/image) → AVIF/WebP, priority preload. */}
       <div className="absolute inset-0 -z-20">
-        <img
+        <OptimizedImage
           src={MEDIA.hero.cover}
           alt={`${FARMHOUSE.name} — a private farmhouse estate in Malir Cantonment, Karachi`}
-          className="h-full w-full object-cover"
-          fetchPriority="high"
+          fill
+          priority
+          sizes="100vw"
+          className="object-cover"
         />
       </div>
 
@@ -51,7 +55,7 @@ export function Hero() {
 
         <div className="mt-10 flex flex-col items-center gap-4 sm:flex-row">
           <a
-            href="#enquire-now"
+            href="#booking-form"
             className="inline-flex items-center justify-center gap-2 rounded-full bg-tertiary px-8 py-3.5 font-sans text-xs uppercase tracking-luxe text-on-tertiary transition-all hover:bg-amber-soft elevation-1 hover:elevation-2 state-layer"
           >
             <Icon name="event_available" className="text-base" />
