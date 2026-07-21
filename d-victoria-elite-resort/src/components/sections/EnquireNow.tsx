@@ -25,7 +25,7 @@ const REASSURANCE_POINTS = [
 
 /**
  * EnquireNow — inline enquiry section where guests send a stay request
- * directly to the farmhouse owner.
+ * directly to the D-Victoria Elite owner.
  *
  * This is NOT a modal. The form lives in the page so guests can scan the
  * fields without clicking anything first. The form is the section.
@@ -46,7 +46,7 @@ export function EnquireNow() {
               <span className="text-moss-gradient italic"> to arrive.</span>
             </SectionHeading>
             <p className="mt-6 text-base sm:text-lg text-on-surface-variant text-pretty leading-relaxed">
-              Country Farm is owned and hosted by one family. Your enquiry lands
+              D-Victoria Elite is owned and hosted by one family. Your enquiry lands
               directly in their inbox — no middleman, no booking fee. Reply within
               24 hours.
             </p>

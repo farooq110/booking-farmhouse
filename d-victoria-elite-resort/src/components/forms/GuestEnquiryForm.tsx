@@ -213,7 +213,7 @@ export function GuestEnquiryForm() {
 
     if (result.ok) {
       const bookingId = result.data.data?._id ?? "pending";
-      console.info("[Country Farm] Booking confirmed:", bookingId);
+      console.info("[D-Victoria Elite] Booking confirmed:", bookingId);
 
       toast.success("Booking confirmed!", {
         description: `Reference: ${bookingId}. The owner will be in touch within 24 hours.`,
@@ -247,7 +247,7 @@ export function GuestEnquiryForm() {
 
     // ── Error path ── render a themed toast with the appropriate action ──
     const err = result.error;
-    console.error("[Country Farm] Booking failed:", err.kind, err.technical);
+    console.error("[D-Victoria Elite] Booking failed:", err.kind, err.technical);
 
     // Inline error under the submit button (always shown, regardless of kind)
     setBookingError(err.message);
@@ -297,7 +297,7 @@ export function GuestEnquiryForm() {
           Your booking is on its way.
         </h3>
         <p className="mx-auto mt-3 max-w-md text-sm text-on-surface-variant leading-relaxed">
-          Thank you for choosing Country Farm. The owner reads every enquiry
+          Thank you for choosing D-Victoria Elite. The owner reads every enquiry
           personally and will reply within 24 hours — usually much sooner.
         </p>
         <CTAButton
@@ -521,7 +521,7 @@ export function GuestEnquiryForm() {
       {/* <fieldset className="space-y-3 min-w-0">
         <legend className="flex items-center gap-2 font-sans text-[11px] uppercase tracking-luxe text-primary">
           <span className="material-symbols-outlined text-base">celebration</span>
-          What brings you to Country Farm?
+          What brings you to D-Victoria Elite?
         </legend>
 
         <RadioGroup

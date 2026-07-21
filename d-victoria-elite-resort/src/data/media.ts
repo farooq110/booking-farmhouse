@@ -3,6 +3,7 @@
  * All local images use STATIC IMPORTS so next/image auto-fills width/height/blurDataURL.
  */
 import heroCover from "../../public/images/hero-cover.jpg";
+import logo from "../../public/images/logo.jpeg";
 import swimmingPool from "../../public/images/swimming-pool.jpg";
 import park from "../../public/images/park.jpg";
 import kidPlaying from "../../public/images/kid-playing.jpg";
@@ -24,7 +25,7 @@ function getFarmhousePhone(): string {
 }
 function getFarmhouseEmail(): string {
   if (typeof process !== "undefined" && process.env?.NEXT_PUBLIC_FARMHOUSE_EMAIL) return process.env.NEXT_PUBLIC_FARMHOUSE_EMAIL;
-  return "hello@countryfarm.pk";
+  return "hello@dvictoriaelite.pk";
 }
 function getFarmhouseAddress(): string {
   if (typeof process !== "undefined" && process.env?.NEXT_PUBLIC_FARMHOUSE_ADDRESS) return process.env.NEXT_PUBLIC_FARMHOUSE_ADDRESS;
@@ -42,7 +43,20 @@ export const FARMHOUSE = {
   email,
   emailHref: `mailto:${email}`,
   address,
-  mapsEmbed: "https://www.google.com/maps?q=Gadap+Town+Karachi&output=embed&z=16",
+  // Google Maps embed that drops a labelled marker at the resort AND
+  // resolves to the place's info card when the user clicks it.
+  //
+  // IMPORTANT: using raw lat,lng in `q=` makes Google show a generic
+  // pin with no place context — clicking it raises "Place info
+  // couldn't load". Using the PLACE NAME lets Google resolve it to a
+  // real Place ID, so the marker click opens the full info card
+  // (reviews, ratings, directions, "Open in Maps").
+  //
+  // Coordinates resolved from the owner's maps.app.goo.gl share link:
+  //   25.0040625, 67.2174375
+  mapsEmbed:
+    "https://www.google.com/maps?q=D-Victoria+Elite+Resorts,+Gadap+Town,+Karachi&z=15&output=embed",
+  // Public shareable link — exact URL requested by the owner.
   mapsLink: "https://maps.app.goo.gl/uvZTd8NFHdcCVhPw8?g_st=aw",
 } as const;
 
@@ -62,21 +76,30 @@ export const API_CONFIG = {
 } as const;
 
 export const MEDIA = {
-  hero: { cover: heroCover, poster: heroCover, videoSrc: undefined as string | undefined },
+  logo,
+  hero: {
+    cover: heroCover,
+    poster: heroCover,
+    // Self-hosted MP4 — played slowly in the background of the hero.
+    // See: https://nextjs.org/docs/app/guides/videos
+    // The actual chunk-by-chunk fetch is handled off-main-thread by
+    // `src/workers/videoPreloader.worker.ts` (see BackgroundVideo component).
+    videoSrc: "/videos/hero-cover.mp4",
+  },
   estate: { pool: swimmingPool, park: park, pavilion: slider6 },
   facilities: { kids: kidPlaying, gaming: sportsRoom, sports: park },
   gallery: [
-    { src: slider1, alt: "Country Farm — exterior view", caption: "The estate · exterior" },
-    { src: slider2, alt: "Country Farm — garden perspective", caption: "Garden · perspective" },
-    { src: slider3, alt: "Country Farm — interior pavilion", caption: "Pavilion · interior" },
-    { src: slider6, alt: "Country Farm — air-conditioned glass pavilion", caption: "Glass pavilion · AC" },
-    { src: slider8, alt: "Country Farm — grounds at golden hour", caption: "Grounds · golden hour" },
-    { src: slider9, alt: "Country Farm — evening ambiance", caption: "Evening · ambiance" },
-    { src: slider10, alt: "Country Farm — quiet corner of the estate", caption: "Quiet corner · estate" },
-    { src: slider11, alt: "Country Farm — landscape detail", caption: "Landscape · detail" },
+    { src: slider1, alt: "D-Victoria Elite — exterior view", caption: "The estate · exterior" },
+    { src: slider2, alt: "D-Victoria Elite — garden perspective", caption: "Garden · perspective" },
+    { src: slider3, alt: "D-Victoria Elite — interior pavilion", caption: "Pavilion · interior" },
+    { src: slider6, alt: "D-Victoria Elite — air-conditioned glass pavilion", caption: "Glass pavilion · AC" },
+    { src: slider8, alt: "D-Victoria Elite — grounds at golden hour", caption: "Grounds · golden hour" },
+    { src: slider9, alt: "D-Victoria Elite — evening ambiance", caption: "Evening · ambiance" },
+    { src: slider10, alt: "D-Victoria Elite — quiet corner of the estate", caption: "Quiet corner · estate" },
+    { src: slider11, alt: "D-Victoria Elite — landscape detail", caption: "Landscape · detail" },
   ],
   videos: [
-    { label: "Farmhouse walk-through · exterior + grounds", src: undefined as string | undefined, poster: slider1 },
+    { label: "D-Victoria Elite walk-through · exterior + grounds", src: undefined as string | undefined, poster: slider1 },
     { label: "Sunrise over the estate", src: undefined as string | undefined, poster: slider8 },
     { label: "Evening on the deck", src: undefined as string | undefined, poster: slider9 },
   ],

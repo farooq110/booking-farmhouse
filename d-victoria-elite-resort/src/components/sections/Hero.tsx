@@ -1,6 +1,6 @@
 "use client";
 import { SectionLabel, Icon } from "@/components/ui/luxury-primitives";
-import { OptimizedImage } from "@/lib/images";
+import { BackgroundVideo } from "@/components/ui/background-video";
 import { MEDIA, FARMHOUSE } from "@/data/media";
 
 export function Hero() {
@@ -9,16 +9,20 @@ export function Hero() {
       id="hero"
       className="relative isolate flex min-h-[100svh] flex-col items-center justify-center overflow-hidden"
     >
-      {/* Beautiful farmhouse cover image (full-bleed background).
-          Uses OptimizedImage (next/image) → AVIF/WebP, priority preload. */}
+      {/* D-Victoria Elite cover VIDEO (full-bleed background).
+          - Self-hosted MP4 served from /public/videos/hero-cover.mp4
+          - Fetched chunk-by-chunk off the main thread by
+            `src/workers/videoPreloader.worker.ts`.
+          - Falls back to the cover image if the video takes too long.
+          - <video> attributes per the Next.js video guide:
+            https://nextjs.org/docs/app/guides/videos */}
       <div className="absolute inset-0 -z-20">
-        <OptimizedImage
-          src={MEDIA.hero.cover}
-          alt={`${FARMHOUSE.name} — a private farmhouse estate in Malir Cantonment, Karachi`}
-          fill
-          priority
-          sizes="100vw"
-          className="object-cover"
+        <BackgroundVideo
+          src={MEDIA.hero.videoSrc}
+          poster={MEDIA.hero.cover}
+          alt={`${FARMHOUSE.name} — a private resort estate in Gadap Town, Karachi`}
+          playbackRate={0.5}
+          maxWaitMs={10_000}
         />
       </div>
 
@@ -38,17 +42,17 @@ export function Hero() {
       <div className="relative z-10 mx-auto flex max-w-5xl flex-col items-center px-6 py-24 text-center">
         <SectionLabel className="text-cream/90">
           <span className="h-px w-6 bg-amber-soft" />
-          {FARMHOUSE.name} · Private Farmhouse · Karachi
+          {FARMHOUSE.name} · Private Resort · Karachi
         </SectionLabel>
 
         <h1 className="font-display font-medium text-balance text-cream leading-[1.02] text-5xl sm:text-6xl md:text-7xl lg:text-[5.5rem]">
           Welcome to our
           <br />
-          <span className="text-gold-gradient italic">country farmhouse.</span>
+          <span className="text-gold-gradient italic">D-Victoria Elite.</span>
         </h1>
 
         <p className="mt-7 max-w-xl text-base sm:text-lg text-cream/85 text-pretty leading-relaxed">
-          A private farmhouse in Malir Cantonment, Karachi. Pool, gardens,
+          A private resort in Gadap Town, Karachi. Pool, gardens,
           gaming, and sports facilities — for your family, friends, and
           quiet weekends. Book directly with the owner.
         </p>

@@ -1,5 +1,5 @@
 /**
- * Declarative scroll journey for the signature 3D Farmhouse Windmill.
+ * Declarative scroll journey for the signature 3D D-Victoria Elite Windmill.
  *
  * Each entry defines where the windmill should float to as the user scrolls
  * through a section, plus a "dip" amplitude (the soft bounce near the

@@ -5,29 +5,29 @@ import { Toaster } from "@/components/ui/toaster";
 import { ThemedAppLoader } from "@/components/ui/themed-loader";
 
 export const metadata: Metadata = {
-  title: "Country Farm — A Private Farmhouse in Malir Cantonment, Karachi",
+  title: "D-Victoria Elite — A Private Resort in Gadap Town, Karachi",
   description:
-    "A private farmhouse in Malir Cantt, Karachi. Pool, gardens, gaming, and sports facilities. Owned and hosted by one family. Book directly — no middleman, no booking fees.",
+    "A private resort in Gadap Town, Karachi. Pool, gardens, gaming, and sports facilities. Owned and hosted by one family. Book directly — no middleman, no booking fees.",
   keywords: [
-    "Country Farm",
-    "private farmhouse Karachi",
-    "Malir Cantt farmhouse",
-    "farmhouse rental Karachi",
-    "family-owned farmhouse",
-    "book farmhouse directly Pakistan",
-    "luxury farmhouse Karachi",
+    "D-Victoria Elite",
+    "private resort Karachi",
+    "Gadap Town resort",
+    "resort rental Karachi",
+    "family-owned resort",
+    "book resort directly Pakistan",
+    "luxury resort Karachi",
   ],
-  authors: [{ name: "Country Farm" }],
+  authors: [{ name: "D-Victoria Elite" }],
   openGraph: {
-    title: "Country Farm — A Private Farmhouse in Malir Cantonment, Karachi",
+    title: "D-Victoria Elite — A Private Resort in Gadap Town, Karachi",
     description:
       "Owned and hosted by one family. Pool, gardens, gaming, sports. Book directly — no middleman, no booking fees.",
-    siteName: "Country Farm",
+    siteName: "D-Victoria Elite",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Country Farm — A Private Farmhouse in Malir Cantonment, Karachi",
+    title: "D-Victoria Elite — A Private Resort in Gadap Town, Karachi",
     description:
       "Owned and hosted by one family. Book directly — no middleman, no booking fees.",
   },

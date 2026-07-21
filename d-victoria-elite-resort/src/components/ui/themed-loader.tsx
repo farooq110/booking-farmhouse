@@ -3,7 +3,9 @@
  * ThemedAppLoader — first-paint loader shown until the page is hydrated.
  */
 import { useEffect, useState } from "react";
+import Image from "next/image";
 import { cn } from "@/lib/utils";
+import { MEDIA, FARMHOUSE } from "@/data/media";
 
 export function ThemedAppLoader() {
   const [hidden, setHidden] = useState(false);
@@ -18,9 +20,15 @@ export function ThemedAppLoader() {
   return (
     <div aria-hidden="true" className={cn("cf-app-loader", hidden && "is-hidden")}>
       <div className="cf-app-loader__mark">
-        <span className="material-symbols-outlined text-3xl">cottage</span>
+        <Image
+          src={MEDIA.logo}
+          alt={`${FARMHOUSE.name} logo`}
+          width={48}
+          height={48}
+          className="h-12 w-12 rounded-full object-cover"
+        />
       </div>
-      <p className="cf-app-loader__label">Country Farm</p>
+      <p className="cf-app-loader__label">{FARMHOUSE.name}</p>
     </div>
   );
 }

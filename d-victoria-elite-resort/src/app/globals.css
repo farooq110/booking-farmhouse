@@ -8,13 +8,13 @@
 @custom-variant dark (&:is(.dark *));
 
 /* ============================================================
-   D-VICTORIA ELITE — Luxury Farmhouse · Material-Design-3-inspired
+   D-VICTORIA ELITE — Luxury Resort · Material-Design-3-inspired
    Light, warm, premium. Inspired by the booking-app-admin-portal
-   reference aesthetic but elevated for a country-farm sanctuary.
+   reference aesthetic but elevated for a private resort sanctuary.
    ============================================================ */
 
 @theme inline {
-  /* Surface system — MD3 light surfaces, warmed for farmhouse brand */
+  /* Surface system — MD3 light surfaces, warmed for D-Victoria Elite brand */
   --color-background: var(--bg);
   --color-foreground: var(--fg);
   --color-surface: var(--surface);

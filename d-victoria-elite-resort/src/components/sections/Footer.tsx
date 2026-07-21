@@ -1,5 +1,6 @@
 "use client";
-import { FARMHOUSE } from "@/data/media";
+import Image from "next/image";
+import { FARMHOUSE, MEDIA } from "@/data/media";
 
 const NAV_LINKS = [
   { label: "The Estate", href: "#estate" },
@@ -29,9 +30,20 @@ export function Footer() {
         <div className="grid gap-10 md:grid-cols-[1fr_auto]">
           {/* Brand stamp */}
           <div>
-            <p className="font-display text-2xl text-on-surface">{FARMHOUSE.name}</p>
-            <p className="mt-2 max-w-sm text-sm text-on-surface-variant leading-relaxed">
-              A private farmhouse in Malir Cantonment, Karachi. Owned and hosted
+            <div className="flex items-center gap-3">
+              <span className="flex h-12 w-12 items-center justify-center rounded-full overflow-hidden ring-1 ring-outline-variant bg-primary">
+                <Image
+                  src={MEDIA.logo}
+                  alt={`${FARMHOUSE.name} logo`}
+                  width={48}
+                  height={48}
+                  className="h-full w-full object-cover"
+                />
+              </span>
+              <p className="font-display text-2xl text-on-surface">{FARMHOUSE.name}</p>
+            </div>
+            <p className="mt-3 max-w-sm text-sm text-on-surface-variant leading-relaxed">
+              A private resort in Gadap Town, Karachi. Owned and hosted
               by one family. Book directly — no middleman, no booking fees.
             </p>
 

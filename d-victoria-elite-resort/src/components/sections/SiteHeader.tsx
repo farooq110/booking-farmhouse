@@ -1,11 +1,12 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Image from "next/image";
 import { Icon } from "@/components/ui/luxury-primitives";
-import { FARMHOUSE } from "@/data/media";
+import { FARMHOUSE, MEDIA } from "@/data/media";
 
 /**
- * SiteHeader — sticky top bar with the Country Farm logo + name on the
+ * SiteHeader — sticky top bar with the D-Victoria Elite logo + name on the
  * left, and a "Booking Slots" button on the right that scrolls to the
  * enquiry form.
  *
@@ -49,13 +50,20 @@ export function SiteHeader() {
         >
           <span
             className={[
-              "flex h-10 w-10 items-center justify-center rounded-full transition-colors",
+              "flex h-10 w-10 items-center justify-center rounded-full overflow-hidden transition-colors ring-1",
               scrolled
-                ? "bg-primary text-on-primary"
-                : "bg-cream/15 text-cream backdrop-blur-sm",
+                ? "bg-primary text-on-primary ring-outline-variant"
+                : "bg-cream/15 ring-cream/30 backdrop-blur-sm",
             ].join(" ")}
           >
-            <span className="material-symbols-outlined text-xl">cottage</span>
+            <Image
+              src={MEDIA.logo}
+              alt={`${FARMHOUSE.name} logo`}
+              width={40}
+              height={40}
+              className="h-full w-full object-cover"
+              priority
+            />
           </span>
           <span
             className={[
