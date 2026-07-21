@@ -1,9 +1,7 @@
 /**
  * Centralized media registry for Country Farm.
- * All local images use STATIC IMPORTS so next/image auto-fills
- * width/height/blurDataURL.
+ * All local images use STATIC IMPORTS so next/image auto-fills width/height/blurDataURL.
  */
-
 import heroCover from "../../public/images/hero-cover.jpg";
 import swimmingPool from "../../public/images/swimming-pool.jpg";
 import park from "../../public/images/park.jpg";
@@ -21,23 +19,15 @@ import slider10 from "../../public/images/slider-10.jpg";
 import slider11 from "../../public/images/slider-11.jpg";
 
 function getFarmhousePhone(): string {
-  if (typeof process !== "undefined" && process.env?.NEXT_PUBLIC_FARMHOUSE_PHONE) {
-    return process.env.NEXT_PUBLIC_FARMHOUSE_PHONE;
-  }
+  if (typeof process !== "undefined" && process.env?.NEXT_PUBLIC_FARMHOUSE_PHONE) return process.env.NEXT_PUBLIC_FARMHOUSE_PHONE;
   return "+9203111227717";
 }
-
 function getFarmhouseEmail(): string {
-  if (typeof process !== "undefined" && process.env?.NEXT_PUBLIC_FARMHOUSE_EMAIL) {
-    return process.env.NEXT_PUBLIC_FARMHOUSE_EMAIL;
-  }
+  if (typeof process !== "undefined" && process.env?.NEXT_PUBLIC_FARMHOUSE_EMAIL) return process.env.NEXT_PUBLIC_FARMHOUSE_EMAIL;
   return "hello@countryfarm.pk";
 }
-
 function getFarmhouseAddress(): string {
-  if (typeof process !== "undefined" && process.env?.NEXT_PUBLIC_FARMHOUSE_ADDRESS) {
-    return process.env.NEXT_PUBLIC_FARMHOUSE_ADDRESS;
-  }
+  if (typeof process !== "undefined" && process.env?.NEXT_PUBLIC_FARMHOUSE_ADDRESS) return process.env.NEXT_PUBLIC_FARMHOUSE_ADDRESS;
   return "7, 8 Deh Mehran, near Malir Cantt Check Post No 3, Malir Cantonment, Karachi, 75070, Pakistan";
 }
 
@@ -52,23 +42,16 @@ export const FARMHOUSE = {
   email,
   emailHref: `mailto:${email}`,
   address,
-  mapsEmbed:
-    "https://www.google.com/maps?q=Malir%20Cantt%20Check%20Post%20No%203%2C%20Karachi%2C%20Pakistan&output=embed",
-  mapsLink:
-    "https://www.google.com/maps/search/?api=1&query=Malir+Cantt+Check+Post+No+3+Karachi+Pakistan",
+  mapsEmbed: "https://www.google.com/maps?q=Malir%20Cantt%20Check%20Post%20No%203%2C%20Karachi%2C%20Pakistan&output=embed",
+  mapsLink: "https://www.google.com/maps/search/?api=1&query=Malir+Cantt+Check+Post+No+3+Karachi+Pakistan",
 } as const;
 
 function getApiBaseUrl(): string {
-  if (typeof process !== "undefined" && process.env?.NEXT_PUBLIC_API_BASE_URL) {
-    return process.env.NEXT_PUBLIC_API_BASE_URL;
-  }
+  if (typeof process !== "undefined" && process.env?.NEXT_PUBLIC_API_BASE_URL) return process.env.NEXT_PUBLIC_API_BASE_URL;
   return "";
 }
-
 function getDefaultServiceId(): string {
-  if (typeof process !== "undefined" && process.env?.NEXT_PUBLIC_DEFAULT_SERVICE_ID) {
-    return process.env.NEXT_PUBLIC_DEFAULT_SERVICE_ID;
-  }
+  if (typeof process !== "undefined" && process.env?.NEXT_PUBLIC_DEFAULT_SERVICE_ID) return process.env.NEXT_PUBLIC_DEFAULT_SERVICE_ID;
   return "";
 }
 
@@ -79,21 +62,9 @@ export const API_CONFIG = {
 } as const;
 
 export const MEDIA = {
-  hero: {
-    cover: heroCover,
-    poster: heroCover,
-    videoSrc: undefined as string | undefined,
-  },
-  estate: {
-    pool: swimmingPool,
-    park: park,
-    pavilion: slider6,
-  },
-  facilities: {
-    kids: kidPlaying,
-    gaming: sportsRoom,
-    sports: park,
-  },
+  hero: { cover: heroCover, poster: heroCover, videoSrc: undefined as string | undefined },
+  estate: { pool: swimmingPool, park: park, pavilion: slider6 },
+  facilities: { kids: kidPlaying, gaming: sportsRoom, sports: park },
   gallery: [
     { src: slider1, alt: "Country Farm — exterior view", caption: "The estate · exterior" },
     { src: slider2, alt: "Country Farm — garden perspective", caption: "Garden · perspective" },
