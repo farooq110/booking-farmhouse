@@ -10,19 +10,22 @@ export function Hero() {
       className="relative isolate flex min-h-[100svh] flex-col items-center justify-center overflow-hidden"
     >
       {/* D-Victoria Elite cover VIDEO (full-bleed background).
-          - Self-hosted MP4 served from /public/videos/hero-cover.mp4
-          - Fetched chunk-by-chunk off the main thread by
-            `src/workers/videoPreloader.worker.ts`.
-          - Falls back to the cover image if the video takes too long.
+          - Self-hosted MP4 served from /public/videos/hero-cover-landscape.mp4
+            (1920×1080 landscape H.264, 14 MB).
+          - Streams chunk-by-chunk via the Service Worker at /public/sw.js,
+            which answers HTTP Range requests so the browser only pulls
+            the bytes it needs (no Blob assembly, no main-thread fetch).
+          - Falls back to the smaller portrait MP4 if the landscape
+            version fails, then to the cover image if both fail.
           - <video> attributes per the Next.js video guide:
             https://nextjs.org/docs/app/guides/videos */}
       <div className="absolute inset-0 -z-20">
         <BackgroundVideo
           src={MEDIA.hero.videoSrc}
+          fallbackSrc={MEDIA.hero.videoFallbackSrc}
           poster={MEDIA.hero.cover}
           alt={`${FARMHOUSE.name} — a private resort estate in Gadap Town, Karachi`}
           playbackRate={0.5}
-          maxWaitMs={10_000}
         />
       </div>
 

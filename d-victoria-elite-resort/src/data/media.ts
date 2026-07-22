@@ -80,11 +80,26 @@ export const MEDIA = {
   hero: {
     cover: heroCover,
     poster: heroCover,
-    // Self-hosted MP4 — played slowly in the background of the hero.
-    // See: https://nextjs.org/docs/app/guides/videos
-    // The actual chunk-by-chunk fetch is handled off-main-thread by
-    // `src/workers/videoPreloader.worker.ts` (see BackgroundVideo component).
-    videoSrc: "/videos/hero-cover.mp4",
+    // Primary hero background video — 540×960 portrait, FULL CONTENT
+    // (no cropping). The original portrait video is downscaled for size
+    // but kept at its natural 9:16 aspect ratio so nothing is cut off.
+    //
+    // Display strategy (see BackgroundVideo component):
+    //   The portrait video is displayed centered on screen at its
+    //   natural aspect ratio. The empty space on the sides (which would
+    //   otherwise be black bars) is filled with a blurred, scaled-up
+    //   copy of the same video — the "cinematic blurred background
+    //   fill" pattern used by Instagram/YouTube for vertical video on
+    //   horizontal screens. No content is cropped.
+    //
+    // Streaming:
+    //   - Served by a Service Worker that handles HTTP Range requests
+    //     (see /public/sw.js). Browser only pulls bytes ahead of the
+    //     playhead, no Blob assembly.
+    videoSrc: "/videos/hero-cover-portrait.mp4",
+    // Original portrait MP4 kept as a fallback if the optimized version
+    // ever fails to load (e.g. SW not yet registered on first paint).
+    videoFallbackSrc: "/videos/hero-cover-portrait.mp4",
   },
   estate: { pool: swimmingPool, park: park, pavilion: slider6 },
   facilities: { kids: kidPlaying, gaming: sportsRoom, sports: park },

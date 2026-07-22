@@ -3,6 +3,7 @@ import { fontClassNames } from "@/lib/fonts";
 import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
 import { ThemedAppLoader } from "@/components/ui/themed-loader";
+import { ServiceWorkerRegister } from "@/components/ServiceWorkerRegister";
 
 export const metadata: Metadata = {
   title: "D-Victoria Elite — A Private Resort in Gadap Town, Karachi",
@@ -53,6 +54,9 @@ export default function RootLayout({
         {children}
         <Toaster />
         <ThemedAppLoader />
+        {/* Registers /sw.js — handles HTTP Range requests for /videos/*
+            so the hero background video streams chunk-by-chunk. */}
+        <ServiceWorkerRegister />
       </body>
     </html>
   );

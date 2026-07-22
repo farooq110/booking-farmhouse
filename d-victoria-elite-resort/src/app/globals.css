@@ -677,18 +677,6 @@
   color: var(--tertiary, oklch(0.70 0.13 70)) !important;
   font-weight: 700 !important;
 }
-.cf-calendar .rdp-today::after,
-.cf-calendar [class*="today"]::after {
-  content: "" !important;
-  position: absolute !important;
-  bottom: 0.35rem !important;
-  left: 50% !important;
-  transform: translateX(-50%) !important;
-  width: 4px !important;
-  height: 4px !important;
-  border-radius: 9999px !important;
-  background: var(--tertiary, oklch(0.70 0.13 70)) !important;
-}
 
 .cf-calendar .rdp-selected,
 .cf-calendar button[data-selected-single="true"],
@@ -703,16 +691,28 @@
   background: oklch(0.65 0.13 65) !important;
 }
 
-/* Disabled (past dates) — 45% opacity (visible) + red-ish strike-through */
+/* Disabled (past dates) — 45% opacity (visible) + red-ish strike-through.
+   IMPORTANT: only target buttons that are actually :disabled, NOT buttons
+   whose class attribute contains the substring "disabled" (Tailwind ships
+   `disabled:opacity-50` etc. on every variant-aware button, which would
+   match `[class*="disabled"]` and accidentally strike through every day). */
 .cf-calendar .rdp-disabled,
 .cf-calendar button:disabled,
-.cf-calendar [class*="disabled"] {
+.cf-calendar td.rdp-disabled button,
+.cf-calendar td[class*="disabled"] button {
   color: oklch(0.20 0.018 145 / 0.45) !important;
   cursor: not-allowed !important;
   text-decoration: line-through !important;
   text-decoration-color: oklch(0.65 0.18 25 / 0.55) !important;
   text-decoration-thickness: 1.5px !important;
   opacity: 1 !important;
+}
+
+/* Active (non-disabled) days — make sure no strike-through ever leaks in. */
+.cf-calendar .rdp-button:not(:disabled),
+.cf-calendar button[class*="day"]:not(:disabled),
+.cf-calendar td:not(.rdp-disabled) button:not(:disabled) {
+  text-decoration: none !important;
 }
 
 .cf-calendar .rdp-outside,
