@@ -1,13 +1,14 @@
 /**
- * Centralized media registry for D-Victoria Elite.
+ * Centralized media registry for Summer Land Farm House.
  * All local images use STATIC IMPORTS so next/image auto-fills width/height/blurDataURL.
  */
 import heroCover from "../../public/images/hero-cover.jpg";
-import logo from "../../public/images/logo.jpeg";
+import logo from "../../public/images/logo.jpg";
 import swimmingPool from "../../public/images/swimming-pool.jpg";
 import park from "../../public/images/park.jpg";
 import kidPlaying from "../../public/images/kid-playing.jpg";
-import sportsRoom from "../../public/images/sports-room.jpeg";
+import sportsRoom from "../../public/images/playground.jpg";
+import gamingRoom from "../../public/images/sports-room.jpg";
 import slider1 from "../../public/images/slider-1.jpg";
 import slider2 from "../../public/images/slider-2.jpg";
 import slider3 from "../../public/images/slider-3.jpg";
@@ -21,15 +22,15 @@ import slider11 from "../../public/images/slider-11.jpg";
 
 function getFarmhousePhone(): string {
   if (typeof process !== "undefined" && process.env?.NEXT_PUBLIC_FARMHOUSE_PHONE) return process.env.NEXT_PUBLIC_FARMHOUSE_PHONE;
-  return "+92 3373523503";
+  return "+92 3152559431";
 }
 function getFarmhouseEmail(): string {
   if (typeof process !== "undefined" && process.env?.NEXT_PUBLIC_FARMHOUSE_EMAIL) return process.env.NEXT_PUBLIC_FARMHOUSE_EMAIL;
-  return "hello@dvictoriaelite.pk";
+  return "hello@summerlandfarmhouse.pk";
 }
 function getFarmhouseAddress(): string {
   if (typeof process !== "undefined" && process.env?.NEXT_PUBLIC_FARMHOUSE_ADDRESS) return process.env.NEXT_PUBLIC_FARMHOUSE_ADDRESS;
-  return "Gadap Town, Karachi";
+  return "Land no. 86, Al Jannat Village, near Cosy water park, Gadap Town, Karachi";
 }
 
 const phone = getFarmhousePhone();
@@ -37,27 +38,24 @@ const email = getFarmhouseEmail();
 const address = getFarmhouseAddress();
 
 export const FARMHOUSE = {
-  name: "D-Victoria Elite",
+  name: "Summer Land Farm House",
   phone,
   phoneHref: `tel:${phone}`,
   email,
   emailHref: `mailto:${email}`,
   address,
-  // Google Maps embed that drops a labelled marker at the resort AND
-  // resolves to the place's info card when the user clicks it.
+  // Google Maps embed — uses the farmhouse name + address as the query so
+  // Google geocodes it, drops a labelled pin, and shows an info card
+  // (with the name + address) when the user clicks the pin.
   //
-  // IMPORTANT: using raw lat,lng in `q=` makes Google show a generic
-  // pin with no place context — clicking it raises "Place info
-  // couldn't load". Using the PLACE NAME lets Google resolve it to a
-  // real Place ID, so the marker click opens the full info card
-  // (reviews, ratings, directions, "Open in Maps").
-  //
-  // Coordinates resolved from the owner's maps.app.goo.gl share link:
-  //   25.0040625, 67.2174375
+  // The `maps.google.com/maps?q=...&output=embed` format is the most
+  // reliable keyless embed — it renders a real Google Map with a marker
+  // that opens an info window on click.
   mapsEmbed:
-    "https://www.google.com/maps?q=D-Victoria+Elite+Resorts,+Gadap+Town,+Karachi&z=15&output=embed",
-  // Public shareable link — exact URL requested by the owner.
-  mapsLink: "https://maps.app.goo.gl/uvZTd8NFHdcCVhPw8?g_st=aw",
+    "https://maps.google.com/maps?q=Summer+Land+Farm+House,+Al+Jannat+Village,+near+Cosy+Water+Park,+Gadap+Town,+Karachi,+Pakistan&t=&z=15&ie=UTF8&iwloc=&output=embed",
+  // Public shareable link — opens Google Maps search for the farmhouse.
+  mapsLink:
+    "https://www.google.com/maps/search/?api=1&query=Summer+Land+Farm+House+Al+Jannat+Village+Cosy+Water+Park+Gadap+Town+Karachi",
 } as const;
 
 function getApiBaseUrl(): string {
@@ -80,41 +78,23 @@ export const MEDIA = {
   hero: {
     cover: heroCover,
     poster: heroCover,
-    // Primary hero background video — 540×960 portrait, FULL CONTENT
-    // (no cropping). The original portrait video is downscaled for size
-    // but kept at its natural 9:16 aspect ratio so nothing is cut off.
-    //
-    // Display strategy (see BackgroundVideo component):
-    //   The portrait video is displayed centered on screen at its
-    //   natural aspect ratio. The empty space on the sides (which would
-    //   otherwise be black bars) is filled with a blurred, scaled-up
-    //   copy of the same video — the "cinematic blurred background
-    //   fill" pattern used by Instagram/YouTube for vertical video on
-    //   horizontal screens. No content is cropped.
-    //
-    // Streaming:
-    //   - Served by a Service Worker that handles HTTP Range requests
-    //     (see /public/sw.js). Browser only pulls bytes ahead of the
-    //     playhead, no Blob assembly.
-    videoSrc: "/videos/hero-cover-portrait.mp4",
-    // Original portrait MP4 kept as a fallback if the optimized version
-    // ever fails to load (e.g. SW not yet registered on first paint).
-    videoFallbackSrc: "/videos/hero-cover-portrait.mp4",
+    videoSrc: "/videos/hero-cover.mp4",
+    videoFallbackSrc: "/videos/hero-cover.mp4",
   },
   estate: { pool: swimmingPool, park: park, pavilion: slider6 },
-  facilities: { kids: kidPlaying, gaming: sportsRoom, sports: park },
+  facilities: { kids: kidPlaying, gaming: gamingRoom, sports: sportsRoom },
   gallery: [
-    { src: slider1, alt: "D-Victoria Elite — exterior view", caption: "The estate · exterior" },
-    { src: slider2, alt: "D-Victoria Elite — garden perspective", caption: "Garden · perspective" },
-    { src: slider3, alt: "D-Victoria Elite — interior pavilion", caption: "Pavilion · interior" },
-    { src: slider6, alt: "D-Victoria Elite — air-conditioned glass pavilion", caption: "Glass pavilion · AC" },
-    { src: slider8, alt: "D-Victoria Elite — grounds at golden hour", caption: "Grounds · golden hour" },
-    { src: slider9, alt: "D-Victoria Elite — evening ambiance", caption: "Evening · ambiance" },
-    { src: slider10, alt: "D-Victoria Elite — quiet corner of the estate", caption: "Quiet corner · estate" },
-    { src: slider11, alt: "D-Victoria Elite — landscape detail", caption: "Landscape · detail" },
+    { src: slider1, alt: "Summer Land Farm House — exterior view", caption: "The estate · exterior" },
+    { src: slider2, alt: "Summer Land Farm House — garden perspective", caption: "Garden · perspective" },
+    { src: slider3, alt: "Summer Land Farm House — interior pavilion", caption: "Pavilion · interior" },
+    { src: slider6, alt: "Summer Land Farm House — air-conditioned glass pavilion", caption: "Glass pavilion · AC" },
+    { src: slider8, alt: "Summer Land Farm House — grounds at golden hour", caption: "Grounds · golden hour" },
+    { src: slider9, alt: "Summer Land Farm House — evening ambiance", caption: "Evening · ambiance" },
+    { src: slider10, alt: "Summer Land Farm House — quiet corner of the estate", caption: "Quiet corner · estate" },
+    { src: slider11, alt: "Summer Land Farm House — landscape detail", caption: "Landscape · detail" },
   ],
   videos: [
-    { label: "D-Victoria Elite walk-through · exterior + grounds", src: undefined as string | undefined, poster: slider1 },
+    { label: "Summer Land Farm House walk-through · exterior + grounds", src: undefined as string | undefined, poster: slider1 },
     { label: "Sunrise over the estate", src: undefined as string | undefined, poster: slider8 },
     { label: "Evening on the deck", src: undefined as string | undefined, poster: slider9 },
   ],

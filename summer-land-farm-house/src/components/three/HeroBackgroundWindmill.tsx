@@ -19,7 +19,7 @@ import { useReducedMotion } from "@/lib/hooks/useReducedMotion";
  *  - Mouse parallax
  *
  * Kept:
- *  - Procedural windmill geometry (the D-Victoria Elite theme)
+ *  - Procedural windmill geometry (the Summer Land Farm House theme)
  *  - Continuous blade rotation (signature motion)
  *  - prefers-reduced-motion fallback (gentler spin)
  */

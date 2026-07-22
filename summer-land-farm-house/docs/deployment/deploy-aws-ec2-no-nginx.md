@@ -1,4 +1,4 @@
-# Deploy D-Victoria Elite to AWS EC2 (without nginx)
+# Deploy Summer Land Farm House to AWS EC2 (without nginx)
 
 > Minimal-deploys alternative to the nginx guide. Uses a tiny Node.js static
 > file server behind Caddy, which auto-provisions TLS certificates. Use this
@@ -124,7 +124,7 @@ sirv --help
 ```bash
 sudo tee /etc/systemd/system/elixir-arena.service > /dev/null <<'EOF'
 [Unit]
-Description=D-Victoria Elite static file server
+Description=Summer Land Farm House static file server
 After=network.target
 
 [Service]

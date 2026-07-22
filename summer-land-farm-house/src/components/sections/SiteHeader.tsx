@@ -6,7 +6,7 @@ import { Icon } from "@/components/ui/luxury-primitives";
 import { FARMHOUSE, MEDIA } from "@/data/media";
 
 /**
- * SiteHeader — sticky top bar with the D-Victoria Elite logo + name on the
+ * SiteHeader — sticky top bar with the Summer Land Farm House logo + name on the
  * left, and a "Booking Slots" button on the right that scrolls to the
  * enquiry form.
  *

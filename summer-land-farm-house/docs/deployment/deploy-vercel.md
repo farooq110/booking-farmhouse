@@ -1,4 +1,4 @@
-# Deploy D-Victoria Elite to Vercel
+# Deploy Summer Land Farm House to Vercel
 
 > Step-by-step guide for deploying the Vite + React 19 production build to
 > Vercel. The Next.js preview is **not** what we deploy — Vercel will build

@@ -1,6 +1,6 @@
-# D-Victoria Elite
+# Summer Land Farm House
 
-> A single-page marketing website for **D-Victoria Elite**, a luxury farmhouse
+> A single-page marketing website for **Summer Land Farm House**, a luxury farmhouse
 > rental service. Built around a signature 3D Monstera leaf that travels
 > with the user as they scroll — engineered to feel like an exclusive,
 > premium, serene retreat brand, not a generic SaaS landing page.
@@ -140,4 +140,4 @@ secrets).
 
 ## 📄 License
 
-Proprietary — © D-Victoria Elite. All rights reserved.
+Proprietary — © Summer Land Farm House. All rights reserved.

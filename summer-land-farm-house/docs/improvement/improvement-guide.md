@@ -1,4 +1,4 @@
-# D-Victoria Elite — Improvement Guide
+# Summer Land Farm House — Improvement Guide
 
 > Concrete ideas for extending and improving the site after the initial
 > launch. Ordered by impact-to-effort ratio.
@@ -121,7 +121,7 @@ Help Google understand the property by adding `LodgingBusiness` schema:
     __html: JSON.stringify({
       "@context": "https://schema.org",
       "@type": "LodgingBusiness",
-      name: "D-Victoria Elite",
+      name: "Summer Land Farm House",
       description: "Private luxury farmhouse sanctuary…",
       address: { /* … */ },
       geo: { /* … */ },

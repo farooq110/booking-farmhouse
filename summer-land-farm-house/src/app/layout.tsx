@@ -6,11 +6,11 @@ import { ThemedAppLoader } from "@/components/ui/themed-loader";
 import { ServiceWorkerRegister } from "@/components/ServiceWorkerRegister";
 
 export const metadata: Metadata = {
-  title: "D-Victoria Elite — A Private Resort in Gadap Town, Karachi",
+  title: "Summer Land Farm House — A Private Resort in Gadap Town, Karachi",
   description:
     "A private resort in Gadap Town, Karachi. Pool, gardens, gaming, and sports facilities. Owned and hosted by one family. Book directly — no middleman, no booking fees.",
   keywords: [
-    "D-Victoria Elite",
+    "Summer Land Farm House",
     "private resort Karachi",
     "Gadap Town resort",
     "resort rental Karachi",
@@ -18,17 +18,17 @@ export const metadata: Metadata = {
     "book resort directly Pakistan",
     "luxury resort Karachi",
   ],
-  authors: [{ name: "D-Victoria Elite" }],
+  authors: [{ name: "Summer Land Farm House" }],
   openGraph: {
-    title: "D-Victoria Elite — A Private Resort in Gadap Town, Karachi",
+    title: "Summer Land Farm House — A Private Resort in Gadap Town, Karachi",
     description:
       "Owned and hosted by one family. Pool, gardens, gaming, sports. Book directly — no middleman, no booking fees.",
-    siteName: "D-Victoria Elite",
+    siteName: "Summer Land Farm House",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "D-Victoria Elite — A Private Resort in Gadap Town, Karachi",
+    title: "Summer Land Farm House — A Private Resort in Gadap Town, Karachi",
     description:
       "Owned and hosted by one family. Book directly — no middleman, no booking fees.",
   },

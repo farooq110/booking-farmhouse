@@ -4,7 +4,7 @@
  * Swapping zod → valibot / yup means editing only this file.
  *
  * Note: this form is for GUESTS who want to enquire about staying at
- * D-Victoria Elite. The enquiry goes DIRECTLY to the D-Victoria Elite owner —
+ * Summer Land Farm House. The enquiry goes DIRECTLY to the Summer Land Farm House owner —
  * no middleman, no platform fee, no commission. The owner manages
  * their own property and replies to guests personally.
  */
@@ -83,7 +83,7 @@ export const guestEnquirySchema = z.object({
     .number({ message: "Please tell us how many guests." })
     .int()
     .min(1, "At least one guest is required.")
-    .max(16, "D-Victoria Elite accommodates up to 16 guests per stay."),
+    .max(16, "Summer Land Farm House accommodates up to 16 guests per stay."),
 
   timeSlot: z
     .enum(["morning", "afternoon", "evening", "full-day"], {
@@ -125,23 +125,23 @@ export const TIME_SLOT_LABELS = {
 } as const;
 
 /**
- * Bookable services at D-Victoria Elite.
+ * Bookable services at Summer Land Farm House.
  * The `id` must match the service _id in the backend.
  * Change these to match your backend's service catalogue.
  */
 export const SERVICE_OPTIONS = [
   {
-    id: "d-victoria-elite-full-estate",
+    id: "summer-land-farm-house-full-estate",
     label: "Full Estate Booking",
-    description: "Entire D-Victoria Elite + all facilities (pool, park, gaming, sports)",
+    description: "Entire Summer Land Farm House + all facilities (pool, park, gaming, sports)",
   },
   {
-    id: "d-victoria-elite-day-pass",
+    id: "summer-land-farm-house-day-pass",
     label: "Day Pass",
     description: "Daytime access to pool, gardens, and sports facilities",
   },
   {
-    id: "d-victoria-elite-event",
+    id: "summer-land-farm-house-event",
     label: "Event / Celebration",
     description: "Private event booking with full estate access",
   },
@@ -149,7 +149,7 @@ export const SERVICE_OPTIONS = [
 
 export const ADDON_OPTIONS = [
   { id: "chef", label: "Private chef & sommelier (in-house)" },
-  { id: "breakfast", label: "D-Victoria Elite breakfast basket daily" },
+  { id: "breakfast", label: "Summer Land Farm House breakfast basket daily" },
   { id: "spa", label: "On-site spa therapist" },
   { id: "orchard-tour", label: "Guided orchard & garden walk" },
   { id: "horseback", label: "Sunrise horseback trail ride" },

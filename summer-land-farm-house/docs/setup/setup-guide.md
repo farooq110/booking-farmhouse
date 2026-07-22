@@ -1,4 +1,4 @@
-# D-Victoria Elite — Setup Guide
+# Summer Land Farm House — Setup Guide
 
 > Step-by-step instructions for a developer joining the project. By the end
 > of this guide you will have both the Next.js preview and the Vite
