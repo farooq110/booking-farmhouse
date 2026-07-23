@@ -2,23 +2,26 @@
  * Centralized media registry for The Green Valley.
  * All local images use STATIC IMPORTS so next/image auto-fills width/height/blurDataURL.
  */
-import heroCover from "../../public/images/hero-cover.jpeg";
-// import logo from "../../public/images/logo.jpg";
-import swimmingPool from "../../public/images/swimming-pool.jpg";
-import park from "../../public/images/park.jpg";
-import kidPlaying from "../../public/images/kid-playing.jpg";
-import sportsRoom from "../../public/images/playground.jpg";
-import gamingRoom from "../../public/images/sports-room.jpg";
-import slider1 from "../../public/images/slider-1.jpg";
-import slider2 from "../../public/images/slider-2.jpg";
-import slider3 from "../../public/images/slider-3.jpg";
-import slider4 from "../../public/images/slider-4.jpg";
-import slider5 from "../../public/images/slider-5.jpg";
-import slider6 from "../../public/images/slider-6.jpg";
-import slider8 from "../../public/images/slider-8.jpg";
-import slider9 from "../../public/images/slider-9.jpg";
-import slider10 from "../../public/images/slider-10.jpg";
-import slider11 from "../../public/images/slider-11.jpg";
+import heroCover from "../../public/images/hero-cover.webp";
+import logo from "../../public/images/logo.webp";
+import swimmingPool from "../../public/images/swimming-pool.webp";
+import park from "../../public/images/park.webp";
+import bedRoom from "../../public/images/bed-room.webp";
+// import kidPlaying from "../../public/images/kid-playing.webp";
+import sportsRoom from "../../public/images/sports-room.jpg";
+import playground from "../../public/images/playground.png";
+import slider1 from "../../public/images/slider-1.webp";
+import slider2 from "../../public/images/slider-2.webp";
+import slider3 from "../../public/images/slider-3.webp";
+import slider4 from "../../public/images/slider-4.webp";
+import slider5 from "../../public/images/slider-5.webp";
+import slider6 from "../../public/images/slider-6.png";
+import slider8 from "../../public/images/slider-8.webp";
+import slider9 from "../../public/images/slider-9.webp";
+import slider10 from "../../public/images/slider-10.webp";
+import slider11 from "../../public/images/slider-11.png";
+import dinningArea from "../../public/images/dinning-area.png";
+
 
 function getFarmhousePhone(): string {
   if (typeof process !== "undefined" && process.env?.NEXT_PUBLIC_FARMHOUSE_PHONE) return process.env.NEXT_PUBLIC_FARMHOUSE_PHONE;
@@ -84,8 +87,11 @@ export const MEDIA = {
     videoSrc: "/videos/hero-cover.mp4",
     videoFallbackSrc: "/videos/hero-cover.mp4",
   },
-  estate: { pool: swimmingPool, park: park, pavilion: slider6 },
-  facilities: { kids: kidPlaying, gaming: gamingRoom, sports: sportsRoom },
+  estate: { pool: swimmingPool, park: park, pavilion: bedRoom },
+  facilities: { 
+    dinningArea,
+    // kids: kidPlaying, 
+    gaming: playground, sports: sportsRoom },
   gallery: [
     { src: slider1, alt: "The Green Valley — exterior view", caption: "The estate · exterior" },
     { src: slider2, alt: "The Green Valley — garden perspective", caption: "Garden · perspective" },
