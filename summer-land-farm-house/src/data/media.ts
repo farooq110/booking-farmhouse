@@ -2,7 +2,7 @@
  * Centralized media registry for Summer Land Farm House.
  * All local images use STATIC IMPORTS so next/image auto-fills width/height/blurDataURL.
  */
-import heroCover from "../../public/images/hero-cover.jpg";
+import heroCover from "../../public/images/hero-cover.jpeg";
 import logo from "../../public/images/logo.jpg";
 import swimmingPool from "../../public/images/swimming-pool.jpg";
 import park from "../../public/images/park.jpg";
@@ -44,18 +44,17 @@ export const FARMHOUSE = {
   email,
   emailHref: `mailto:${email}`,
   address,
-  // Google Maps embed — uses the farmhouse name + address as the query so
-  // Google geocodes it, drops a labelled pin, and shows an info card
-  // (with the name + address) when the user clicks the pin.
+  // Google Maps embed — drops a labelled pin with "Summer Land Farm House"
+  // and OPENS THE INFO WINDOW BY DEFAULT (no click required).
   //
-  // The `maps.google.com/maps?q=...&output=embed` format is the most
-  // reliable keyless embed — it renders a real Google Map with a marker
-  // that opens an info window on click.
+  // The `iwloc=A` parameter tells Google to show the info window for the
+  // first result automatically when the map loads. The user sees the
+  // farmhouse name + address immediately without needing to click the pin.
   mapsEmbed:
-    "https://maps.google.com/maps?q=Summer+Land+Farm+House,+Al+Jannat+Village,+near+Cosy+Water+Park,+Gadap+Town,+Karachi,+Pakistan&t=&z=15&ie=UTF8&iwloc=&output=embed",
+    "https://maps.google.com/maps?q=Summer+Land+Farm+House+Al+Jannat+Village+Gadap+Town+Karachi&t=&z=15&ie=UTF8&iwloc=A&output=embed",
   // Public shareable link — opens Google Maps search for the farmhouse.
   mapsLink:
-    "https://www.google.com/maps/search/?api=1&query=Summer+Land+Farm+House+Al+Jannat+Village+Cosy+Water+Park+Gadap+Town+Karachi",
+    "https://www.google.com/maps/search/?api=1&query=Summer+Land+Farm+House+Al+Jannat+Village+Gadap+Town+Karachi",
 } as const;
 
 function getApiBaseUrl(): string {

@@ -1,4 +1,17 @@
 "use client";
+
+// ── Suppress the THREE.Clock deprecation warning ──
+// @react-three/fiber creates `new THREE.Clock()` internally, which logs a
+// deprecation warning. Patch console.warn at module level (runs before the
+// lazy-loaded 3D scene) to filter it out.
+if (typeof window !== "undefined") {
+  const _origWarn = console.warn;
+  console.warn = function (...args: unknown[]) {
+    if (typeof args[0] === "string" && args[0].includes("THREE.Clock")) return;
+    _origWarn.apply(console, args as never[]);
+  };
+}
+
 import { SiteHeader } from "@/components/sections/SiteHeader";
 import { Hero } from "@/components/sections/Hero";
 import { Estate } from "@/components/sections/Estate";

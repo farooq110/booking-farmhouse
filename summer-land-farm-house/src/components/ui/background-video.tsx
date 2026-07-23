@@ -3,31 +3,26 @@
 /**
  * BackgroundVideo — reusable, single-source background video layer.
  *
- * Source of truth for the `<video>` tag attributes used here:
- *   https://nextjs.org/docs/app/guides/videos
- *
  * DISPLAY STRATEGY — "Cinematic Blurred Background Fill"
  *
- * The source video is portrait (9:16). To display it on a landscape
- * hero without cropping any content, we render TWO synchronized
- * <video> elements stacked on top of each other:
+ * The source video is portrait (9:16). We render TWO synchronized
+ * <video> elements stacked:
  *
- *   Layer 1 (background fill):
- *     - Same video, scaled with `object-cover` to fill the entire screen
- *     - Heavily blurred (blur-3xl) and darkened so it reads as ambient
- *     - This fills the side space that would otherwise be black bars
+ *   Layer 1 (background fill): same video, scaled to cover, blurred,
+ *     darkened. Fills the side space that would otherwise be black bars.
  *
- *   Layer 2 (foreground, full content):
- *     - Same video, scaled with `object-contain` to fit within the screen
- *     - Centered, sharp, no blur
- *     - The full portrait video content is visible — nothing cropped
+ *   Layer 2 (foreground, full content): same video at natural aspect ratio,
+ *     centered, sharp, no blur.
  *
- * This is the same pattern Instagram, YouTube, and TikTok use to show
- * vertical video on horizontal screens.
+ * MOBILE vs DESKTOP SIZING:
+ *   Desktop (landscape, ≥641px): foreground = 60vw → 60% center + 20% blur
+ *     per side. The 9:16 video at 60vw is taller than the viewport, so
+ *     top/bottom are clipped — only left/right blur is visible.
  *
- * On portrait/mobile screens (where the viewport is also 9:16), the
- * foreground video naturally fills the screen and the background layer
- * is hidden behind it — both layers degrade gracefully.
+ *   Mobile (portrait, ≤640px): foreground = 80vw → 80% center + 10% blur
+ *     per side. The video fills the viewport height naturally. Blur only
+ *     appears on the LEFT and RIGHT (10% each), NOT surrounding the whole
+ *     video. The video is NOT cropped on mobile.
  *
  * STREAMING
  *   Both video elements share the same `src`. The Service Worker
@@ -39,11 +34,6 @@
  *     give up and show the poster permanently.
  *   - If the user has `prefers-reduced-motion: reduce`, we never even
  *     set the `src` — the poster image is the final state.
- *
- * PLAYBACK
- *   `playbackRate = 0.5` is applied to BOTH layers on every relevant
- *   event (loadedmetadata, play, seeked, canplay). They stay in sync
- *   because they share the same source and the same playback rate.
  */
 
 import { useEffect, useRef, useState } from "react";
@@ -75,7 +65,6 @@ export function BackgroundVideo({
   playbackRate = 0.5,
   className = "",
 }: BackgroundVideoProps) {
-  // Refs to BOTH video elements (background fill + foreground content)
   const bgVideoRef = useRef<HTMLVideoElement | null>(null);
   const fgVideoRef = useRef<HTMLVideoElement | null>(null);
   const [state, setState] = useState<LoadState>("idle");
@@ -99,8 +88,6 @@ export function BackgroundVideo({
   }, []);
 
   // ── Robust ready-detection. ──
-  // We listen to BOTH video elements. Either one flipping to ready
-  // means we can show the video layers and hide the poster.
   useEffect(() => {
     const videos = [bgVideoRef.current, fgVideoRef.current].filter(Boolean) as HTMLVideoElement[];
     if (videos.length === 0) return;
@@ -136,7 +123,6 @@ export function BackgroundVideo({
       );
     }
 
-    // Polling fallback in case events fire before listeners attach.
     let pollCount = 0;
     const poll = setInterval(() => {
       pollCount++;
@@ -172,6 +158,19 @@ export function BackgroundVideo({
 
   return (
     <div className={`absolute inset-0 overflow-hidden ${className}`}>
+      {/* Inline styles for the foreground video wrapper.
+          ALL screen sizes: 80% width, 10% blur per side.
+          The video fills the full viewport height; only left/right
+          have the blurred background fill visible. */}
+      <style>{`
+        [data-fg-video-wrapper] {
+          width: 80vw !important;
+          height: 100% !important;
+          max-height: 100% !important;
+          aspect-ratio: unset !important;
+        }
+      `}</style>
+
       {/* ── Poster image (always rendered; fades out when video is ready). ── */}
       <div
         className="absolute inset-0 transition-opacity duration-1000"
@@ -188,15 +187,7 @@ export function BackgroundVideo({
         />
       </div>
 
-      {/* ── Layer 1: Blurred background fill ──
-          Same video scaled to cover the entire screen, then blurred
-          and darkened. Fills the side space on landscape screens.
-
-          Proportional sizing: the foreground video (Layer 2) is capped
-          so that on wide screens it always occupies ~70% of the
-          viewport width, leaving ~15% per side for the blurred fill.
-          This keeps the blurred sides always SMALLER than the sharp
-          center, per the user's requirement. */}
+      {/* ── Layer 1: Blurred background fill ── */}
       {state !== "failed" && (
         <video
           ref={bgVideoRef}
@@ -204,7 +195,6 @@ export function BackgroundVideo({
           className="absolute inset-0 h-full w-full object-cover transition-opacity duration-1000 blur-3xl scale-125"
           style={{
             opacity: videoVisible ? 0.6 : 0,
-            // Slight darkening so the foreground pops
             filter: "brightness(0.5) saturate(1.1)",
           }}
           src={activeSrc}
@@ -219,68 +209,20 @@ export function BackgroundVideo({
       )}
 
       {/* ── Layer 2: Foreground video, FULL CONTENT ──
-          Same video at natural aspect ratio, centered.
-
-          SIZING STRATEGY (per user requirement):
-            "the left and right blurry part should always be small
-             from center part, approximately 1/3 small"
-
-            Translation: the sharp center should be ~3× the width of
-            each blurred side. Achieved with: 60% center + 20% per side.
-
-          THE GEOMETRY PROBLEM:
-            The source video is 9:16 portrait. On a 16:9 landscape
-            viewport, a 9:16 video that fits the full viewport height
-            is only 32% of the viewport width. To make the center 60%
-            of the width on landscape, the video MUST be taller than
-            the viewport — there's no way around the math.
-
-          THE COMPROMISE (chosen per user priority):
-            User's two requirements, in priority order:
-              1. Blurred sides must be ~1/3 the size of the center
-                 (this request — most recent, takes priority)
-              2. Show as much of the video as possible (earlier request)
-
-            Solution: fix the wrapper at 60vw width with the video's
-            natural 9:16 aspect ratio. The wrapper WILL be taller than
-            the viewport on landscape screens. The wrapper is centered
-            vertically, so equal portions of the top and bottom of the
-            portrait frame are clipped by the parent's `overflow: hidden`.
-
-            What gets cropped: the top and bottom ~30% of the portrait
-            frame on landscape screens (the parts typically least
-            important — sky, ground, ceiling). The horizontal content
-            (the important part for a property tour video) is fully
-            visible.
-
-            On portrait/mobile: 60vw fits comfortably, no cropping,
-            ratio is exactly 60/20/20. */}
+          ALL screens: 80vw width, full height, 10% blur per side.
+          The blurred background fill (Layer 1) shows through on the
+          left and right 10% gaps. */}
       {state !== "failed" && (
         <div
+          data-fg-video-wrapper="true"
           className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 transition-opacity duration-1000"
           style={{
             opacity: videoVisible ? 1 : 0,
-            // 60% of viewport width on all screen sizes.
-            // This guarantees the blurred sides are always ~20% each
-            // (center is 3× wider than each side), per user requirement.
-            width: "60vw",
-            maxWidth: "100%",
-            // Use the video's natural 9/16 aspect ratio so the box
-            // is always the right shape for the video to fill.
-            aspectRatio: "9 / 16",
-            // NO max-height — we INTENTIONALLY allow vertical overflow
-            // on landscape screens so the width can be 60% of viewport.
-            // The parent <div> has `overflow: hidden`, so the overflow
-            // is clipped cleanly (top and bottom of portrait frame).
           }}
         >
           <video
             ref={fgVideoRef}
             key={`${activeSrc}-fg`}
-            // object-cover (not contain) so the video fills the wrapper
-            // completely. Since the wrapper has the video's natural
-            // 9:16 aspect ratio, there's no distortion — the video
-            // maps 1:1 to the wrapper.
             className="h-full w-full object-cover"
             src={activeSrc}
             autoPlay
