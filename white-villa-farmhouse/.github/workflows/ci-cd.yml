@@ -1,0 +1,164 @@
+# D-Victoria Elite — CI/CD
+#
+# This workflow:
+#   1. Lints the Next.js preview (root)
+#   2. Type-checks + builds the Vite production app (frontend/)
+#   3. On push to main, optionally deploys the Vite build to the EC2 host
+#      (enable the deploy job by setting the required repo secrets)
+#
+# Required secrets for auto-deploy (set in GitHub repo → Settings → Secrets):
+#   EC2_HOST            e.g. elixirarena.com
+#   EC2_USER            e.g. ubuntu
+#   EC2_SSH_KEY         the private half of your EC2 key pair (PEM format)
+#
+# If the secrets are missing, the deploy job is skipped — CI still runs.
+
+name: CI / CD
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+
+# Cancel in-progress runs for the same ref — saves CI minutes.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # ──────────────────────────────────────────────────────────────────────
+  # 1. Lint the Next.js preview
+  # ──────────────────────────────────────────────────────────────────────
+  lint-preview:
+    name: Lint (Next.js preview)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Install deps
+        run: bun install --frozen-lockfile
+
+      - name: Lint
+        run: bun run lint
+
+  # ──────────────────────────────────────────────────────────────────────
+  # 2. Type-check + build the Vite production app
+  # ──────────────────────────────────────────────────────────────────────
+  build-vite:
+    name: Build (Vite production)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Install deps
+        working-directory: frontend
+        run: bun install --frozen-lockfile
+
+      - name: Type-check
+        working-directory: frontend
+        run: bun run typecheck
+
+      - name: Build
+        working-directory: frontend
+        run: bun run build
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: elixir-arena-dist
+          path: frontend/dist
+          retention-days: 7
+
+  # ──────────────────────────────────────────────────────────────────────
+  # 3. Deploy to EC2 (only on push to main, only if secrets are present)
+  # ──────────────────────────────────────────────────────────────────────
+  deploy-ec2:
+    name: Deploy to EC2 (production)
+    needs: [lint-preview, build-vite]
+    if: |
+      github.ref == 'refs/heads/main' &&
+      github.event_name == 'push' &&
+      vars.ENABLE_EC2_DEPLOY == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download build artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: elixir-arena-dist
+          path: dist
+
+      - name: Copy build to EC2 via rsync
+        uses: burnett01/rsync-deployments@7.0.1
+        with:
+          switches: -avzr --delete
+          path: dist/
+          remote_path: /home/ubuntu/elixir-arena/frontend/dist/
+          remote_host: ${{ secrets.EC2_HOST }}
+          remote_user: ${{ secrets.EC2_USER }}
+          remote_key: ${{ secrets.EC2_SSH_KEY }}
+
+      - name: Reload static server on EC2
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            sudo systemctl restart elixir-arena || true
+            sudo systemctl reload caddy || sudo systemctl reload nginx || true
+
+  # ──────────────────────────────────────────────────────────────────────
+  # 4. Deploy to Vercel (optional — enable by setting VERCEL_TOKEN)
+  # ──────────────────────────────────────────────────────────────────────
+  deploy-vercel:
+    name: Deploy to Vercel
+    needs: [lint-preview, build-vite]
+    if: |
+      github.ref == 'refs/heads/main' &&
+      github.event_name == 'push' &&
+      vars.ENABLE_VERCEL_DEPLOY == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Install Vercel CLI
+        run: bun add -g vercel
+
+      - name: Pull Vercel env
+        working-directory: frontend
+        run: vercel pull --yes --token=${{ secrets.VERCEL_TOKEN }}
+        env:
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+
+      - name: Build for Vercel
+        working-directory: frontend
+        run: vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
+        env:
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+
+      - name: Deploy to Vercel
+        working-directory: frontend
+        run: vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }}
+        env:
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
