@@ -1,6 +1,5 @@
 "use client";
 import { Canvas } from "@react-three/fiber";
-import { Environment } from "@react-three/drei";
 import { Suspense } from "react";
 import { Windmill } from "./Windmill";
 import { useReducedMotion } from "@/lib/hooks/useReducedMotion";
@@ -17,9 +16,15 @@ import { useReducedMotion } from "@/lib/hooks/useReducedMotion";
  *  - GSAP ScrollTrigger wiring
  *  - Web-worker math
  *  - Mouse parallax
+ *  - drei <Environment preset="park" /> — this loaded an external HDR
+ *    (rooitou_park_1k.hdr) from the pmndrs/drei-assets CDN on every
+ *    page load. Removing it eliminates a network fetch and the
+ *    duplicate-fetch seen in the dev-tools Network tab. The scene
+ *    keeps its ambient + directional lights, which are more than
+ *    enough for a low-opacity background element.
  *
  * Kept:
- *  - Procedural windmill geometry (the The Green Valley theme)
+ *  - Procedural windmill geometry (the Casa De Fazenda theme)
  *  - Continuous blade rotation (signature motion)
  *  - prefers-reduced-motion fallback (gentler spin)
  */
@@ -55,7 +60,6 @@ export function HeroBackgroundWindmill() {
             intensity={0.3}
             color="#8a9a78"
           />
-          <Environment preset="park" environmentIntensity={0.5} />
 
           {/* Position the windmill to the far right, well clear of the headline.
               Scaled down + pushed back in Z so it reads as a background element,

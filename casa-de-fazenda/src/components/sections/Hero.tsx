@@ -9,7 +9,7 @@ export function Hero() {
       id="hero"
       className="relative isolate flex min-h-[100svh] flex-col items-center justify-center overflow-hidden"
     >
-      {/* The Green Valley cover VIDEO (full-bleed background).
+      {/* Casa De Fazenda cover VIDEO (full-bleed background).
           - Self-hosted MP4 served from /public/videos/hero-cover-landscape.mp4
             (1920×1080 landscape H.264, 14 MB).
           - Streams chunk-by-chunk via the Service Worker at /public/sw.js,
@@ -51,7 +51,7 @@ export function Hero() {
         <h1 className="font-display font-medium text-balance text-cream leading-[1.02] text-5xl sm:text-6xl md:text-7xl lg:text-[5.5rem]">
           Welcome to
           <br />
-          <span className="text-gold-gradient italic">The Green Valley.</span>
+          <span className="text-gold-gradient italic">Casa De Fazenda.</span>
         </h1>
 
         <p className="mt-7 max-w-xl text-base sm:text-lg text-cream/85 text-pretty leading-relaxed">

@@ -6,7 +6,7 @@ import { Logo } from "@/components/ui/logo";
 import { FARMHOUSE } from "@/data/media";
 
 /**
- * SiteHeader — sticky top bar with the The Green Valley logo + name on the
+ * SiteHeader — sticky top bar with the Casa De Fazenda logo + name on the
  * left, and a "Booking Slots" button on the right that scrolls to the
  * enquiry form.
  *
@@ -41,16 +41,16 @@ export function SiteHeader() {
           : "bg-transparent border-b border-transparent",
       ].join(" ")}
     >
-      <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
+      <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 sm:px-6 sm:py-4">
         {/* Logo + name (left) */}
         <a
           href="#hero"
-          className="flex items-center gap-3 state-layer rounded-xl"
+          className="flex items-center gap-2 sm:gap-3 state-layer rounded-xl min-w-0"
           aria-label={`${FARMHOUSE.name} — back to top`}
         >
           <span
             className={[
-              "flex h-10 w-10 items-center justify-center rounded-full overflow-hidden transition-colors ring-1",
+              "flex h-9 w-9 sm:h-10 sm:w-10 shrink-0 items-center justify-center rounded-full overflow-hidden transition-colors ring-1",
               scrolled
                 ? "bg-primary text-on-primary ring-outline-variant"
                 : "bg-cream/15 ring-cream/30 backdrop-blur-sm",
@@ -60,7 +60,8 @@ export function SiteHeader() {
           </span>
           <span
             className={[
-              "font-display text-xl tracking-tight transition-colors",
+              "font-display tracking-tight transition-colors truncate",
+              "text-base sm:text-xl",
               scrolled ? "text-on-surface" : "text-cream",
             ].join(" ")}
           >
@@ -72,15 +73,19 @@ export function SiteHeader() {
         <button
           type="button"
           onClick={scrollToForm}
+          aria-label="Booking slots"
           className={[
-            "inline-flex items-center gap-2 rounded-full px-5 py-2.5 font-sans text-xs uppercase tracking-luxe transition-all state-layer",
+            "inline-flex items-center gap-1.5 sm:gap-2 rounded-full font-sans uppercase tracking-luxe transition-all state-layer shrink-0",
+            "px-3 py-2 text-[10px] sm:px-5 sm:py-2.5 sm:text-xs",
             scrolled
               ? "bg-tertiary text-on-tertiary hover:bg-amber-soft elevation-1"
               : "bg-tertiary text-on-tertiary hover:bg-amber-soft elevation-2",
           ].join(" ")}
         >
-          <Icon name="event_available" className="text-base" />
-          Booking Slots
+          <Icon name="event_available" className="text-sm sm:text-base" />
+          {/* Compact on mobile, full label on sm+ */}
+          <span className="sm:hidden">Book</span>
+          <span className="hidden sm:inline">Booking Slots</span>
         </button>
       </div>
     </header>

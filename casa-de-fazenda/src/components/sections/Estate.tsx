@@ -42,8 +42,8 @@ const FACILITIES: Facility[] = [
 
 export function Estate() {
   return (
-    <section id="estate" className="relative bg-surface-container-lowest py-28 sm:py-36">
-      <div className="mx-auto max-w-7xl px-6">
+    <section id="estate" className="relative bg-surface-container-lowest py-20 sm:py-28 md:py-36">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6">
         <header className="mx-auto max-w-3xl text-center">
           <SectionLabel>The Estate</SectionLabel>
           <SectionHeading>
@@ -55,7 +55,17 @@ export function Estate() {
           </p>
         </header>
 
-        <div className="mt-16 grid gap-8 md:grid-cols-3">
+        {/*
+          Responsive grid (no horizontal scroll):
+            < 640px  → 1 column (each card full width)
+            ≥ 640px  → 2 columns
+            ≥ 768px  → 3 columns
+          The cards themselves are fluid — they shrink to fit the column.
+        */}
+        <div
+          className="mt-12 sm:mt-16
+                     grid grid-cols-1 gap-6 sm:grid-cols-2 sm:gap-8 md:grid-cols-3"
+        >
           {FACILITIES.map((f, i) => (
             <article
               key={f.title}
@@ -72,7 +82,7 @@ export function Estate() {
                 0{i + 1}
               </span>
 
-              <div className="flex flex-1 flex-col p-7">
+              <div className="flex flex-1 flex-col p-5 sm:p-7">
                 <div className="mb-4 flex items-center gap-2">
                   <span className="flex h-9 w-9 items-center justify-center rounded-full bg-primary-container">
                     <span className="material-symbols-outlined text-lg text-on-primary-container">
@@ -84,7 +94,7 @@ export function Estate() {
                   </span>
                 </div>
 
-                <h3 className="font-display text-2xl text-on-surface">{f.title}</h3>
+                <h3 className="font-display text-xl sm:text-2xl text-on-surface">{f.title}</h3>
                 <p className="mt-3 text-sm leading-relaxed text-on-surface-variant">
                   {f.body}
                 </p>

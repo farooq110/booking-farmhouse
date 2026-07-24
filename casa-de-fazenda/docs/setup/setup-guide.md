@@ -1,4 +1,4 @@
-# The Green Valley — Setup Guide
+# Casa De Fazenda — Setup Guide
 
 > Step-by-step instructions for a developer joining the project. By the end
 > of this guide you will have both the Next.js preview and the Vite

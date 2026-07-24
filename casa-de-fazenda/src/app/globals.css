@@ -8,13 +8,13 @@
 @custom-variant dark (&:is(.dark *));
 
 /* ============================================================
-   THE GREEN VALLEY — Luxury Resort · Material-Design-3-inspired
+   CASA DE FAZENDA — Luxury Resort · Material-Design-3-inspired
    Light, warm, premium. Inspired by the booking-app-admin-portal
    reference aesthetic but elevated for a private resort sanctuary.
    ============================================================ */
 
 @theme inline {
-  /* Surface system — MD3 light surfaces, warmed for The Green Valley brand */
+  /* Surface system — MD3 light surfaces, warmed for Casa De Fazenda brand */
   --color-background: var(--bg);
   --color-foreground: var(--fg);
   --color-surface: var(--surface);

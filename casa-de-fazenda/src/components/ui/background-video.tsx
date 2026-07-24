@@ -5,29 +5,21 @@
  *
  * DISPLAY STRATEGY — "Cinematic Blurred Background Fill"
  *
- * The source video is portrait (9:16). We render TWO synchronized
- * <video> elements stacked:
- *
- *   Layer 1 (background fill): same video, scaled to cover, blurred,
- *     darkened. Fills the side space that would otherwise be black bars.
- *
- *   Layer 2 (foreground, full content): same video at natural aspect ratio,
- *     centered, sharp, no blur.
+ * The source video is portrait (9:16). We render ONE foreground
+ * <video> element at natural aspect ratio, centered, sharp. The side
+ * space that would otherwise be black bars is filled by the poster
+ * image, scaled to cover and blurred — no second <video> needed.
  *
  * MOBILE vs DESKTOP SIZING:
- *   Desktop (landscape, ≥641px): foreground = 60vw → 60% center + 20% blur
- *     per side. The 9:16 video at 60vw is taller than the viewport, so
- *     top/bottom are clipped — only left/right blur is visible.
- *
- *   Mobile (portrait, ≤640px): foreground = 80vw → 80% center + 10% blur
- *     per side. The video fills the viewport height naturally. Blur only
- *     appears on the LEFT and RIGHT (10% each), NOT surrounding the whole
- *     video. The video is NOT cropped on mobile.
+ *   All viewports: foreground = 80vw → 80% center + 10% blur per side.
+ *   The video fills the viewport height; only left/right have the
+ *   blurred poster-image fill visible.
  *
  * STREAMING
- *   Both video elements share the same `src`. The Service Worker
- *   (/public/sw.js) caches Range responses, so the second <video>
- *   element's requests hit the cache instantly — no double download.
+ *   Only ONE <video> element is mounted, so the browser issues exactly
+ *   one set of Range requests for the MP4. The Service Worker
+ *   (/public/sw.js) caches Range responses (cache-first) so subsequent
+ *   page loads serve the video entirely from cache — zero network.
  *
  * FALLBACKS
  *   - If the video element fires `onError`, we try `fallbackSrc`, then
@@ -65,8 +57,7 @@ export function BackgroundVideo({
   playbackRate = 0.5,
   className = "",
 }: BackgroundVideoProps) {
-  const bgVideoRef = useRef<HTMLVideoElement | null>(null);
-  const fgVideoRef = useRef<HTMLVideoElement | null>(null);
+  const videoRef = useRef<HTMLVideoElement | null>(null);
   const [state, setState] = useState<LoadState>("idle");
   const [activeSrc, setActiveSrc] = useState<string>(src);
 
@@ -89,57 +80,47 @@ export function BackgroundVideo({
 
   // ── Robust ready-detection. ──
   useEffect(() => {
-    const videos = [bgVideoRef.current, fgVideoRef.current].filter(Boolean) as HTMLVideoElement[];
-    if (videos.length === 0) return;
+    const v = videoRef.current;
+    if (!v) return;
+
+    const applyRate = () => {
+      v.playbackRate = playbackRate;
+    };
 
     const markReady = () => {
       setState((prev) => (prev === "ready" ? prev : "ready"));
     };
 
-    const applyRate = (v: HTMLVideoElement) => {
-      v.playbackRate = playbackRate;
-    };
+    const onLoadedMetadata = () => { applyRate(); markReady(); };
+    const onCanPlay = () => { applyRate(); markReady(); };
+    const onPlaying = () => { applyRate(); markReady(); };
+    const onPlay = () => { applyRate(); markReady(); };
+    const onSeeked = () => { applyRate(); };
 
-    const handlers: Array<[HTMLVideoElement, string, () => void]> = [];
-    for (const v of videos) {
-      const onLoadedMetadata = () => { applyRate(v); markReady(); };
-      const onCanPlay = () => { applyRate(v); markReady(); };
-      const onPlaying = () => { applyRate(v); markReady(); };
-      const onPlay = () => { applyRate(v); markReady(); };
-      const onSeeked = () => { applyRate(v); };
-
-      v.addEventListener("loadedmetadata", onLoadedMetadata);
-      v.addEventListener("canplay", onCanPlay);
-      v.addEventListener("playing", onPlaying);
-      v.addEventListener("play", onPlay);
-      v.addEventListener("seeked", onSeeked);
-
-      handlers.push(
-        [v, "loadedmetadata", onLoadedMetadata],
-        [v, "canplay", onCanPlay],
-        [v, "playing", onPlaying],
-        [v, "play", onPlay],
-        [v, "seeked", onSeeked]
-      );
-    }
+    v.addEventListener("loadedmetadata", onLoadedMetadata);
+    v.addEventListener("canplay", onCanPlay);
+    v.addEventListener("playing", onPlaying);
+    v.addEventListener("play", onPlay);
+    v.addEventListener("seeked", onSeeked);
 
     let pollCount = 0;
     const poll = setInterval(() => {
       pollCount++;
-      const anyReady = videos.some((v) => v.readyState >= 2);
-      if (anyReady) {
-        videos.forEach(applyRate);
+      if (v.readyState >= 2) {
+        applyRate();
         markReady();
       }
-      if (videos.some((v) => v.readyState >= 3) || pollCount > 300) {
+      if (v.readyState >= 3 || pollCount > 300) {
         clearInterval(poll);
       }
     }, 100);
 
     return () => {
-      for (const [v, ev, fn] of handlers) {
-        v.removeEventListener(ev, fn);
-      }
+      v.removeEventListener("loadedmetadata", onLoadedMetadata);
+      v.removeEventListener("canplay", onCanPlay);
+      v.removeEventListener("playing", onPlaying);
+      v.removeEventListener("play", onPlay);
+      v.removeEventListener("seeked", onSeeked);
       clearInterval(poll);
     };
   }, [activeSrc, playbackRate]);
@@ -161,7 +142,7 @@ export function BackgroundVideo({
       {/* Inline styles for the foreground video wrapper.
           ALL screen sizes: 80% width, 10% blur per side.
           The video fills the full viewport height; only left/right
-          have the blurred background fill visible. */}
+          have the blurred poster-image fill visible. */}
       <style>{`
         [data-fg-video-wrapper] {
           width: 80vw !important;
@@ -171,15 +152,22 @@ export function BackgroundVideo({
         }
       `}</style>
 
-      {/* ── Poster image (always rendered; fades out when video is ready). ── */}
+      {/* ── Layer 1: Blurred backdrop fill (poster image, no second <video>). ──
+          Reuses the already-loaded poster image — zero extra network.
+          Heavily blurred + darkened so the foreground video reads as the
+          focal point. Hidden once the video is ready (foreground fills
+          the centre; sides still see this blurred fill). */}
       <div
-        className="absolute inset-0 transition-opacity duration-1000"
-        style={{ opacity: videoVisible ? 0 : 1 }}
-        aria-hidden={videoVisible}
+        className="absolute inset-0 transition-opacity duration-1000 blur-3xl scale-125"
+        style={{
+          opacity: videoVisible ? 0.6 : 1,
+          filter: "brightness(0.5) saturate(1.1)",
+        }}
+        aria-hidden="true"
       >
         <Image
           src={poster}
-          alt={alt}
+          alt=""
           fill
           priority
           sizes="100vw"
@@ -187,30 +175,9 @@ export function BackgroundVideo({
         />
       </div>
 
-      {/* ── Layer 1: Blurred background fill ── */}
-      {state !== "failed" && (
-        <video
-          ref={bgVideoRef}
-          key={`${activeSrc}-bg`}
-          className="absolute inset-0 h-full w-full object-cover transition-opacity duration-1000 blur-3xl scale-125"
-          style={{
-            opacity: videoVisible ? 0.6 : 0,
-            filter: "brightness(0.5) saturate(1.1)",
-          }}
-          src={activeSrc}
-          autoPlay
-          muted
-          loop
-          playsInline
-          preload="none"
-          onError={handleError}
-          aria-hidden="true"
-        />
-      )}
-
       {/* ── Layer 2: Foreground video, FULL CONTENT ──
           ALL screens: 80vw width, full height, 10% blur per side.
-          The blurred background fill (Layer 1) shows through on the
+          The blurred backdrop (Layer 1) shows through on the
           left and right 10% gaps. */}
       {state !== "failed" && (
         <div
@@ -221,8 +188,8 @@ export function BackgroundVideo({
           }}
         >
           <video
-            ref={fgVideoRef}
-            key={`${activeSrc}-fg`}
+            ref={videoRef}
+            key={activeSrc}
             className="h-full w-full object-cover"
             src={activeSrc}
             autoPlay
@@ -237,6 +204,20 @@ export function BackgroundVideo({
               Your browser does not support background video. The cover image is shown instead.
             </p>
           </video>
+        </div>
+      )}
+
+      {/* ── Final fallback: poster image shown only if video fails ── */}
+      {state === "failed" && (
+        <div className="absolute inset-0">
+          <Image
+            src={poster}
+            alt={alt}
+            fill
+            priority
+            sizes="100vw"
+            className="object-cover"
+          />
         </div>
       )}
     </div>

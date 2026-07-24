@@ -1,4 +1,4 @@
-# Deploy The Green Valley to Vercel
+# Deploy Casa De Fazenda to Vercel
 
 > Step-by-step guide for deploying the Vite + React 19 production build to
 > Vercel. The Next.js preview is **not** what we deploy — Vercel will build

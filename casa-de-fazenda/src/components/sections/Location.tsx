@@ -27,7 +27,7 @@ export function Location() {
             <span className="text-moss-gradient italic"> easy to reach.</span>
           </SectionHeading>
           <p className="mt-6 text-sm sm:text-base text-on-surface-variant leading-relaxed">
-            The Green Valley is in Gadap Town, Karachi — easy to reach from the city.
+            Casa De Fazenda is in Gadap Town, Karachi — easy to reach from the city.
           </p>
         </header>
 
@@ -36,7 +36,7 @@ export function Location() {
           <figure className="relative">
             <div className="overflow-hidden rounded-3xl border border-outline-variant elevation-2">
               <iframe
-                title="The Green Valley location on Google Maps"
+                title="Casa De Fazenda location on Google Maps"
                 src={FARMHOUSE.mapsEmbed}
                 className="h-[400px] w-full"
                 style={{ border: 0 }}

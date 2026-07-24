@@ -6,11 +6,11 @@ import { ThemedAppLoader } from "@/components/ui/themed-loader";
 import { ServiceWorkerRegister } from "@/components/ServiceWorkerRegister";
 
 export const metadata: Metadata = {
-  title: "The Green Valley — A Private Resort in Gadap Town, Karachi",
+  title: "Casa De Fazenda — A Private Resort in Gadap Town, Karachi",
   description:
     "A private resort in Gadap Town, Karachi. Pool, gardens, gaming, and sports facilities. Owned and hosted by one family. Book directly — no middleman, no booking fees.",
   keywords: [
-    "The Green Valley",
+    "Casa De Fazenda",
     "private resort Karachi",
     "Gadap Town resort",
     "resort rental Karachi",
@@ -18,17 +18,17 @@ export const metadata: Metadata = {
     "book resort directly Pakistan",
     "luxury resort Karachi",
   ],
-  authors: [{ name: "The Green Valley" }],
+  authors: [{ name: "Casa De Fazenda" }],
   openGraph: {
-    title: "The Green Valley — A Private Resort in Gadap Town, Karachi",
+    title: "Casa De Fazenda — A Private Resort in Gadap Town, Karachi",
     description:
       "Owned and hosted by one family. Pool, gardens, gaming, sports. Book directly — no middleman, no booking fees.",
-    siteName: "The Green Valley",
+    siteName: "Casa De Fazenda",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "The Green Valley — A Private Resort in Gadap Town, Karachi",
+    title: "Casa De Fazenda — A Private Resort in Gadap Town, Karachi",
     description:
       "Owned and hosted by one family. Book directly — no middleman, no booking fees.",
   },

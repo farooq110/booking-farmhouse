@@ -25,7 +25,7 @@ export function Gallery() {
           <SectionLabel>Gallery</SectionLabel>
           <SectionHeading>
             A glimpse of
-            <span className="text-moss-gradient italic"> The Green Valley.</span>
+            <span className="text-moss-gradient italic"> Casa De Fazenda.</span>
           </SectionHeading>
           <p className="mt-6 text-sm sm:text-base text-on-surface-variant leading-relaxed">
             Drag the slider or use the arrow keys to look around. Click any image to preview full-screen.

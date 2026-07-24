@@ -40,7 +40,7 @@ export function VideoSlot({
             movie
           </span>
           <span className="font-display text-lg text-on-surface-variant/50 tracking-wide-luxe">
-            The Green Valley
+            Casa De Fazenda
           </span>
         </div>
       </div>

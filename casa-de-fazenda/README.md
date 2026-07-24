@@ -1,6 +1,6 @@
-# The Green Valley
+# Casa De Fazenda
 
-> A single-page marketing website for **The Green Valley**, a luxury farmhouse
+> A single-page marketing website for **Casa De Fazenda**, a luxury farmhouse
 > rental service. Built around a signature 3D Monstera leaf that travels
 > with the user as they scroll — engineered to feel like an exclusive,
 > premium, serene retreat brand, not a generic SaaS landing page.
@@ -140,4 +140,4 @@ secrets).
 
 ## 📄 License
 
-Proprietary — © The Green Valley. All rights reserved.
+Proprietary — © Casa De Fazenda. All rights reserved.

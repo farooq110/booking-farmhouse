@@ -140,7 +140,7 @@ export interface CreateBookingResponse {
 // ─── Service catalogue (UI-facing) ──────────────────────────
 
 /**
- * A bookable service at The Green Valley.
+ * A bookable service at Casa De Fazenda.
  *
  * The serviceId must match the _id configured in the backend. The label
  * is what the guest sees in the form's service selector.

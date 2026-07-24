@@ -1,5 +1,5 @@
 /**
- * Centralized media registry for The Green Valley.
+ * Centralized media registry for Casa De Fazenda.
  * All local images use STATIC IMPORTS so next/image auto-fills width/height/blurDataURL.
  */
 import heroCover from "../../public/images/hero-cover.webp";
@@ -25,15 +25,15 @@ import dinningArea from "../../public/images/dinning-area.png";
 
 function getFarmhousePhone(): string {
   if (typeof process !== "undefined" && process.env?.NEXT_PUBLIC_FARMHOUSE_PHONE) return process.env.NEXT_PUBLIC_FARMHOUSE_PHONE;
-  return "+92 315 2902811";
+  return "+92 337 2373174";
 }
 function getFarmhouseEmail(): string {
   if (typeof process !== "undefined" && process.env?.NEXT_PUBLIC_FARMHOUSE_EMAIL) return process.env.NEXT_PUBLIC_FARMHOUSE_EMAIL;
-  return "hello@thegreenvalley.pk";
+  return "aljannat2021@gmail.com";
 }
 function getFarmhouseAddress(): string {
   if (typeof process !== "undefined" && process.env?.NEXT_PUBLIC_FARMHOUSE_ADDRESS) return process.env.NEXT_PUBLIC_FARMHOUSE_ADDRESS;
-  return "Survey 3 & 4 Deh Kharkharo, NS Residency Sub Division Murad Memon, Karachi, Gadap Town, 75530";
+  return "Casa De Fazenda (farmhouse, Gadap Town, Karachi)";
 }
 
 const phone = getFarmhousePhone();
@@ -41,27 +41,24 @@ const email = getFarmhouseEmail();
 const address = getFarmhouseAddress();
 
 export const FARMHOUSE = {
-  name: "The Green Valley",
+  name: "Casa De Fazenda",
   phone,
   phoneHref: `tel:${phone}`,
   email,
   emailHref: `mailto:${email}`,
   address,
-  // Google Maps — uses the resolved Place ID from the owner's short link.
+  // Google Maps — owner-provided share link resolves to the exact place.
   //
-  // The owner's link (maps.app.goo.gl/RRw8GfJNqXsie17f8) resolves to a
-  // real Google Place:
-  //   Name: The Green Valley Farmhouse
-  //   Place ID: 0x3eb3377883184a59:0xd4e6da7e2f70cfd7
-  //   Coordinates: 24.958571799999998, 67.2571822
+  //   Link: https://maps.app.goo.gl/FFhKu1Rh3CSLbGaZ9?g_st=aw
+  //   Name: Casa De Fazenda (farmhouse, Gadap Town, Karachi)
   //
-  // Using the Place ID in the embed query makes Google drop a labelled
-  // marker with the business name. Clicking the marker opens the full
-  // info card (name, address, directions, etc.) — no "couldn't load" error.
+  // The embed query uses the business name + city so Google drops a
+  // labelled marker on the map. Clicking it opens the full info card
+  // (name, address, directions, etc.).
   mapsEmbed:
-    "https://maps.google.com/maps?q=The+Green+Valley+Farmhouse,+Karachi&z=15&output=embed",
+    "https://maps.google.com/maps?q=Casa+De+Fazenda+farmhouse,+Gadap+Town,+Karachi&z=15&output=embed",
   // Owner-provided Google Maps share link — opens the exact place.
-  mapsLink: "https://maps.app.goo.gl/RRw8GfJNqXsie17f8?g_st=aw",
+  mapsLink: "https://maps.app.goo.gl/FFhKu1Rh3CSLbGaZ9?g_st=aw",
 } as const;
 
 function getApiBaseUrl(): string {
@@ -93,17 +90,17 @@ export const MEDIA = {
     // kids: kidPlaying, 
     gaming: playground, sports: sportsRoom },
   gallery: [
-    { src: slider1, alt: "The Green Valley — exterior view", caption: "The estate · exterior" },
-    { src: slider2, alt: "The Green Valley — garden perspective", caption: "Garden · perspective" },
-    { src: slider3, alt: "The Green Valley — interior pavilion", caption: "Pavilion · interior" },
-    { src: slider6, alt: "The Green Valley — air-conditioned glass pavilion", caption: "Glass pavilion · AC" },
-    { src: slider8, alt: "The Green Valley — grounds at golden hour", caption: "Grounds · golden hour" },
-    { src: slider9, alt: "The Green Valley — evening ambiance", caption: "Evening · ambiance" },
-    { src: slider10, alt: "The Green Valley — quiet corner of the estate", caption: "Quiet corner · estate" },
-    { src: slider11, alt: "The Green Valley — landscape detail", caption: "Landscape · detail" },
+    { src: slider1, alt: "Casa De Fazenda — exterior view", caption: "The estate · exterior" },
+    { src: slider2, alt: "Casa De Fazenda — garden perspective", caption: "Garden · perspective" },
+    { src: slider3, alt: "Casa De Fazenda — interior pavilion", caption: "Pavilion · interior" },
+    { src: slider6, alt: "Casa De Fazenda — air-conditioned glass pavilion", caption: "Glass pavilion · AC" },
+    { src: slider8, alt: "Casa De Fazenda — grounds at golden hour", caption: "Grounds · golden hour" },
+    { src: slider9, alt: "Casa De Fazenda — evening ambiance", caption: "Evening · ambiance" },
+    { src: slider10, alt: "Casa De Fazenda — quiet corner of the estate", caption: "Quiet corner · estate" },
+    { src: slider11, alt: "Casa De Fazenda — landscape detail", caption: "Landscape · detail" },
   ],
   videos: [
-    { label: "The Green Valley walk-through · exterior + grounds", src: undefined as string | undefined, poster: slider1 },
+    { label: "Casa De Fazenda walk-through · exterior + grounds", src: undefined as string | undefined, poster: slider1 },
     { label: "Sunrise over the estate", src: undefined as string | undefined, poster: slider8 },
     { label: "Evening on the deck", src: undefined as string | undefined, poster: slider9 },
   ],

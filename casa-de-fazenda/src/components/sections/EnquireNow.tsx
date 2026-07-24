@@ -25,7 +25,7 @@ const REASSURANCE_POINTS = [
 
 /**
  * EnquireNow — inline enquiry section where guests send a stay request
- * directly to the The Green Valley owner.
+ * directly to the Casa De Fazenda owner.
  *
  * This is NOT a modal. The form lives in the page so guests can scan the
  * fields without clicking anything first. The form is the section.
@@ -46,7 +46,7 @@ export function EnquireNow() {
               <span className="text-moss-gradient italic"> to arrive.</span>
             </SectionHeading>
             <p className="mt-6 text-base sm:text-lg text-on-surface-variant text-pretty leading-relaxed">
-              The Green Valley is owned and hosted by one family. Your enquiry lands
+              Casa De Fazenda is owned and hosted by one family. Your enquiry lands
               directly in their inbox — no middleman, no booking fee. Reply within
               24 hours.
             </p>
