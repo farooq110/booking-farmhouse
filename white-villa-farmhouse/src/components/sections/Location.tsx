@@ -24,10 +24,12 @@ export function Location() {
           <SectionLabel>Location & Arrival</SectionLabel>
           <SectionHeading>
             Easy to find,
-            <span className="text-moss-gradient italic"> easy to reach.</span>
+            <span className="text-sage-gradient italic"> easy to reach.</span>
           </SectionHeading>
           <p className="mt-6 text-sm sm:text-base text-on-surface-variant leading-relaxed">
-            Casa De Fazenda is in Gadap Town, Karachi — easy to reach from the city.
+            White Villa FarmHouse sits in Taiser Town, Karachi — a quiet
+            corner of the city surrounded by open fields, easy to reach from
+            the main arteries yet a world away from the noise.
           </p>
         </header>
 
@@ -36,7 +38,7 @@ export function Location() {
           <figure className="relative">
             <div className="overflow-hidden rounded-3xl border border-outline-variant elevation-2">
               <iframe
-                title="Casa De Fazenda location on Google Maps"
+                title="White Villa FarmHouse — Taiser Town, Karachi"
                 src={FARMHOUSE.mapsEmbed}
                 className="h-[400px] w-full"
                 style={{ border: 0 }}

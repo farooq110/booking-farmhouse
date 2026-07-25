@@ -2,19 +2,21 @@
 @import "tw-animate-css";
 @import "swiper/css";
 @import "swiper/css/effect-coverflow";
+@import "swiper/css/effect-creative";
 @import "swiper/css/pagination";
 @import "swiper/css/navigation";
 
 @custom-variant dark (&:is(.dark *));
 
 /* ============================================================
-   CASA DE FAZENDA — Luxury Resort · Material-Design-3-inspired
-   Light, warm, premium. Inspired by the booking-app-admin-portal
-   reference aesthetic but elevated for a private resort sanctuary.
+   WHITE VILLA FARMHOUSE — Eco-Farm Theme
+   Fresh sage green + natural earth colors. Clean card-based UI.
+   Material-Design-3-inspired surface ladder, warmed for an
+   organic, boutique-farm brand identity.
    ============================================================ */
 
 @theme inline {
-  /* Surface system — MD3 light surfaces, warmed for Casa De Fazenda brand */
+  /* Surface system — MD3 light surfaces, warmed with a touch of oat */
   --color-background: var(--bg);
   --color-foreground: var(--fg);
   --color-surface: var(--surface);
@@ -49,8 +51,12 @@
   /* Brand semantic tokens */
   --color-moss: var(--moss);
   --color-moss-deep: var(--moss-deep);
+  --color-sage: var(--sage);
+  --color-sage-soft: var(--sage-soft);
   --color-clay: var(--clay);
+  --color-bark: var(--bark);
   --color-cream: var(--cream);
+  --color-oat: var(--oat);
   --color-amber: var(--amber);
   --color-amber-soft: var(--amber-soft);
   --color-charcoal: var(--charcoal);
@@ -69,8 +75,8 @@
   --color-input: var(--outline-variant);
   --color-ring: var(--primary);
 
-  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
-  --font-display: var(--font-cormorant), ui-serif, Georgia, serif;
+  --font-sans: var(--font-jakarta), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-bricolage), ui-serif, Georgia, serif;
   --font-material: "Material Symbols Outlined";
 
   --radius-sm: calc(var(--radius) - 4px);
@@ -81,51 +87,55 @@
 }
 
 :root {
-  --radius: 0.75rem;
+  --radius: 0.9rem;
 
-  /* ── MD3 light surface ladder, warmed with a touch of amber ── */
-  --bg: oklch(0.97 0.012 85);                  /* warm cream */
-  --fg: oklch(0.20 0.018 145);                 /* deep moss-charcoal */
-  --surface: oklch(0.985 0.008 85);
-  --surface-dim: oklch(0.93 0.012 85);
-  --surface-bright: oklch(0.99 0.006 85);
+  /* ── MD3 light surface ladder, warmed with a touch of oat ── */
+  --bg: oklch(0.975 0.012 95);                  /* warm oat-cream */
+  --fg: oklch(0.25 0.015 145);                  /* deep bark-moss */
+  --surface: oklch(0.985 0.008 95);
+  --surface-dim: oklch(0.93 0.014 95);
+  --surface-bright: oklch(0.995 0.005 95);
   --surface-lowest: oklch(1 0 0);
-  --surface-low: oklch(0.985 0.008 85);
-  --surface-mid: oklch(0.97 0.012 85);
-  --surface-high: oklch(0.95 0.014 85);
-  --surface-highest: oklch(0.93 0.016 85);
-  --on-surface: oklch(0.20 0.018 145);
-  --on-surface-variant: oklch(0.42 0.020 145);
-  --outline: oklch(0.55 0.018 145);
-  --outline-variant: oklch(0.85 0.014 85);
+  --surface-low: oklch(0.985 0.008 95);
+  --surface-mid: oklch(0.97 0.012 95);
+  --surface-high: oklch(0.95 0.016 95);
+  --surface-highest: oklch(0.93 0.018 95);
+  --on-surface: oklch(0.25 0.015 145);
+  --on-surface-variant: oklch(0.45 0.020 145);
+  --outline: oklch(0.58 0.018 145);
+  --outline-variant: oklch(0.86 0.012 95);
 
-  /* ── Brand: deep forest moss primary, harvest amber tertiary ── */
-  --primary: oklch(0.42 0.045 145);            /* deep forest moss */
-  --on-primary: oklch(0.98 0.005 85);
-  --primary-container: oklch(0.88 0.04 145);
-  --on-primary-container: oklch(0.22 0.030 145);
+  /* ── Brand: fresh sage green primary, harvest amber tertiary ── */
+  --primary: oklch(0.55 0.085 145);             /* fresh sage green */
+  --on-primary: oklch(0.99 0.005 95);
+  --primary-container: oklch(0.90 0.035 145);
+  --on-primary-container: oklch(0.26 0.040 145);
 
-  --secondary: oklch(0.55 0.030 60);           /* warm earth */
-  --on-secondary: oklch(0.99 0.005 85);
-  --secondary-container: oklch(0.92 0.025 60);
-  --on-secondary-container: oklch(0.28 0.025 60);
+  --secondary: oklch(0.55 0.040 60);            /* warm clay/earth */
+  --on-secondary: oklch(0.99 0.005 95);
+  --secondary-container: oklch(0.92 0.022 60);
+  --on-secondary-container: oklch(0.30 0.030 60);
 
-  --tertiary: oklch(0.70 0.13 70);             /* harvest amber gold */
-  --on-tertiary: oklch(0.18 0.012 145);
-  --tertiary-container: oklch(0.92 0.07 75);
-  --on-tertiary-container: oklch(0.30 0.07 70);
+  --tertiary: oklch(0.72 0.115 75);             /* harvest amber gold */
+  --on-tertiary: oklch(0.20 0.012 145);
+  --tertiary-container: oklch(0.93 0.06 75);
+  --on-tertiary-container: oklch(0.32 0.06 70);
 
   --error: oklch(0.55 0.20 25);
-  --on-error: oklch(0.99 0.005 85);
+  --on-error: oklch(0.99 0.005 95);
 
   /* ── Direct brand tokens ── */
-  --moss: oklch(0.42 0.045 145);
-  --moss-deep: oklch(0.30 0.035 145);
-  --clay: oklch(0.55 0.030 60);
-  --cream: oklch(0.97 0.012 85);
-  --amber: oklch(0.70 0.13 70);
-  --amber-soft: oklch(0.86 0.08 80);
-  --charcoal: oklch(0.20 0.018 145);
+  --moss: oklch(0.42 0.055 145);                /* deep forest moss */
+  --moss-deep: oklch(0.30 0.045 145);
+  --sage: oklch(0.55 0.085 145);                /* fresh sage */
+  --sage-soft: oklch(0.78 0.045 145);           /* soft sage for backgrounds */
+  --clay: oklch(0.55 0.040 60);                 /* warm earth/clay */
+  --bark: oklch(0.32 0.015 50);                 /* dark tree bark */
+  --cream: oklch(0.97 0.012 95);
+  --oat: oklch(0.93 0.020 90);                  /* warm oat */
+  --amber: oklch(0.72 0.115 75);
+  --amber-soft: oklch(0.86 0.07 80);
+  --charcoal: oklch(0.22 0.015 145);
 }
 
 @layer base {
@@ -145,7 +155,8 @@
   h1, h2, h3, h4, h5, h6 {
     font-family: var(--font-display);
     font-weight: 500;
-    letter-spacing: -0.015em;
+    letter-spacing: -0.018em;
+    font-optical-sizing: auto;
   }
 
   /* Visible keyboard focus everywhere */
@@ -156,18 +167,18 @@
   }
 
   ::selection {
-    background: var(--tertiary-container);
-    color: var(--on-tertiary-container);
+    background: var(--sage-soft);
+    color: var(--on-primary-container);
   }
 
   ::-webkit-scrollbar { width: 10px; height: 10px; }
   ::-webkit-scrollbar-track { background: var(--surface-dim); }
   ::-webkit-scrollbar-thumb {
-    background: var(--outline-variant);
+    background: var(--sage);
     border-radius: 6px;
     border: 2px solid var(--surface-dim);
   }
-  ::-webkit-scrollbar-thumb:hover { background: var(--outline); }
+  ::-webkit-scrollbar-thumb:hover { background: var(--moss); }
 
   .material-symbols-outlined {
     font-family: var(--font-material);
@@ -206,26 +217,26 @@
     mix-blend-mode: multiply;
   }
 
-  /* MD3 elevation tiers */
+  /* MD3 elevation tiers — earth-tinted shadows */
   .elevation-1 {
     box-shadow:
-      0 1px 2px 0 oklch(0.20 0.018 145 / 0.06),
-      0 1px 3px 0 oklch(0.20 0.018 145 / 0.04);
+      0 1px 2px 0 oklch(0.25 0.015 145 / 0.06),
+      0 1px 3px 0 oklch(0.25 0.015 145 / 0.04);
   }
   .elevation-2 {
     box-shadow:
-      0 1px 2px 0 oklch(0.20 0.018 145 / 0.08),
-      0 4px 8px 0 oklch(0.20 0.018 145 / 0.06);
+      0 1px 2px 0 oklch(0.25 0.015 145 / 0.08),
+      0 4px 8px 0 oklch(0.25 0.015 145 / 0.06);
   }
   .elevation-3 {
     box-shadow:
-      0 2px 4px 0 oklch(0.20 0.018 145 / 0.08),
-      0 8px 16px 0 oklch(0.20 0.018 145 / 0.10);
+      0 2px 4px 0 oklch(0.25 0.015 145 / 0.08),
+      0 8px 16px 0 oklch(0.25 0.015 145 / 0.10);
   }
   .elevation-4 {
     box-shadow:
-      0 4px 8px 0 oklch(0.20 0.018 145 / 0.10),
-      0 16px 32px 0 oklch(0.20 0.018 145 / 0.12);
+      0 4px 8px 0 oklch(0.25 0.015 145 / 0.10),
+      0 16px 32px 0 oklch(0.25 0.015 145 / 0.12);
   }
 
   /* MD3 state-layer hover */
@@ -245,23 +256,36 @@
   .state-layer:hover::before { opacity: 0.08; }
   .state-layer:active::before { opacity: 0.12; }
 
+  /* Eco-Farm organic divider — sage gradient line with a leaf glyph in the middle */
+  .leaf-divider {
+    position: relative;
+    height: 1px;
+    background: linear-gradient(90deg, transparent 0%, oklch(0.55 0.085 145 / 0.45) 50%, transparent 100%);
+  }
   .gold-divider {
     height: 1px;
-    background: linear-gradient(90deg, transparent 0%, oklch(0.70 0.13 70 / 0.5) 50%, transparent 100%);
+    background: linear-gradient(90deg, transparent 0%, oklch(0.72 0.115 75 / 0.5) 50%, transparent 100%);
   }
   .moss-divider {
     height: 1px;
-    background: linear-gradient(90deg, transparent 0%, oklch(0.42 0.045 145 / 0.4) 50%, transparent 100%);
+    background: linear-gradient(90deg, transparent 0%, oklch(0.42 0.055 145 / 0.4) 50%, transparent 100%);
   }
 
+  /* Brand gradient text utilities */
   .text-gold-gradient {
-    background: linear-gradient(135deg, oklch(0.78 0.12 70) 0%, oklch(0.62 0.14 60) 100%);
+    background: linear-gradient(135deg, oklch(0.78 0.115 75) 0%, oklch(0.62 0.135 60) 100%);
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
   }
   .text-moss-gradient {
-    background: linear-gradient(135deg, oklch(0.42 0.045 145) 0%, oklch(0.32 0.04 150) 100%);
+    background: linear-gradient(135deg, oklch(0.55 0.085 145) 0%, oklch(0.35 0.055 150) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .text-sage-gradient {
+    background: linear-gradient(135deg, oklch(0.62 0.090 145) 0%, oklch(0.45 0.075 150) 100%);
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
@@ -270,11 +294,45 @@
   .tracking-luxe { letter-spacing: 0.28em; }
   .tracking-wide-luxe { letter-spacing: 0.18em; }
 
-  /* Swiper overrides for luxury feel */
+  /* ── Eco-Farm card-based UI primitives ──
+     Clean cards with sage tinted backgrounds, soft earth-tinted shadows,
+     and a subtle organic corner detail. */
+  .eco-card {
+    position: relative;
+    background: var(--surface-lowest);
+    border: 1px solid var(--outline-variant);
+    border-radius: 1.25rem;
+    overflow: hidden;
+    transition: transform 400ms cubic-bezier(0.22, 1, 0.36, 1),
+                box-shadow 400ms cubic-bezier(0.22, 1, 0.36, 1),
+                border-color 400ms ease;
+  }
+  .eco-card:hover {
+    transform: translateY(-6px);
+    border-color: var(--sage);
+    box-shadow:
+      0 12px 28px -8px oklch(0.42 0.055 145 / 0.18),
+      0 4px 10px -2px oklch(0.42 0.055 145 / 0.10);
+  }
+  /* Tiny sage corner accent in the top-right of every eco-card */
+  .eco-card::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 2.5rem;
+    height: 2.5rem;
+    background: linear-gradient(225deg, var(--sage-soft) 0%, transparent 70%);
+    pointer-events: none;
+    opacity: 0.55;
+    transition: opacity 400ms ease;
+  }
+  .eco-card:hover::after { opacity: 1; }
+
+  /* Swiper overrides — Eco-Farm style (sage pills + framed arrows) */
   .swiper-slide { height: auto; }
 
-  /* Pagination — rendered as a custom external element below each slider.
-     Override Swiper's default absolute positioning so bullets flow inline. */
+  /* Pagination — custom external element below each slider. */
   .swiper-pagination {
     position: relative !important;
     display: flex !important;
@@ -285,34 +343,166 @@
   }
   .swiper-pagination-bullet {
     background: var(--on-surface-variant);
-    opacity: 0.3;
+    opacity: 0.28;
     width: 8px;
     height: 8px;
     margin: 0 !important;
     border-radius: 9999px;
-    transition: all 200ms ease;
+    transition: all 280ms cubic-bezier(0.22, 1, 0.36, 1);
     cursor: pointer;
   }
   .swiper-pagination-bullet-active {
-    background: var(--primary);
+    background: var(--sage);
     opacity: 1;
-    width: 24px;
+    width: 32px;
     border-radius: 4px;
+    box-shadow: 0 2px 6px oklch(0.55 0.085 145 / 0.35);
   }
+
+  /* Navigation arrows — CRYSTALIZED glassmorphism (eco-farm sage tint)
+     =================================================================
+     Look: a faceted crystal button — translucent sage-tinted glass with
+     a bright top-edge highlight (like light hitting the crown of a
+     cut gem), a soft inner refraction glow, and a deep moss base ring.
+     On hover the crystal "lights up" — sage glow intensifies and the
+     chevron shifts to cream.
+     ================================================================= */
   .swiper-button-next, .swiper-button-prev {
-    color: var(--primary);
-    background: var(--surface-lowest);
-    width: 48px;
-    height: 48px;
+    color: var(--moss);
+    /* Layered translucent sage glass — looks like a cut crystal */
+    background:
+      linear-gradient(135deg,
+        oklch(0.95 0.04 145 / 0.55) 0%,
+        oklch(0.78 0.06 145 / 0.42) 45%,
+        oklch(0.65 0.08 145 / 0.55) 100%);
+    backdrop-filter: blur(14px) saturate(1.4);
+    -webkit-backdrop-filter: blur(14px) saturate(1.4);
+    /* !important — Swiper's --swiper-navigation-size sets width/height
+       inline; we need to override it to keep the crystal at 56px. */
+    width: 56px !important;
+    height: 56px !important;
     border-radius: 50%;
-    box-shadow: 0 2px 8px oklch(0.20 0.018 145 / 0.12);
+    /* Faceted crystal edge — sage ring with a bright inner highlight */
+    border: 1.5px solid oklch(0.55 0.085 145 / 0.55);
+    /* Multi-layer shadow: outer cast + inner top highlight (crown facet) + inner refraction */
+    box-shadow:
+      0 6px 20px -4px oklch(0.30 0.045 145 / 0.32),
+      0 2px 6px oklch(0.30 0.045 145 / 0.18),
+      inset 0 1.5px 0 oklch(1 0 0 / 0.7),
+      inset 0 -1px 0 oklch(0.42 0.055 145 / 0.35),
+      inset 0 0 12px oklch(0.78 0.10 75 / 0.18);
+    transition: all 280ms cubic-bezier(0.22, 1, 0.36, 1);
+    position: relative;
   }
+  /* Crystal top-edge highlight — a thin bright arc along the top of the button */
+  .swiper-button-next::before, .swiper-button-prev::before {
+    content: "";
+    position: absolute;
+    inset: 2px;
+    border-radius: 50%;
+    background: linear-gradient(
+      180deg,
+      oklch(1 0 0 / 0.45) 0%,
+      oklch(1 0 0 / 0) 35%
+    );
+    pointer-events: none;
+    z-index: 0;
+  }
+  /* The chevron icon sits above the highlight */
   .swiper-button-next::after, .swiper-button-prev::after {
-    font-size: 18px;
+    font-size: 20px;
     font-weight: 700;
+    position: relative;
+    z-index: 1;
+    text-shadow: 0 1px 2px oklch(0.30 0.045 145 / 0.35);
+  }
+  /* Hover — crystal "lights up" with sage glow */
+  .swiper-button-next:hover, .swiper-button-prev:hover {
+    background:
+      linear-gradient(135deg,
+        oklch(0.78 0.10 145 / 0.85) 0%,
+        oklch(0.55 0.12 145 / 0.92) 50%,
+        oklch(0.42 0.10 145 / 0.95) 100%);
+    color: oklch(0.99 0.005 95);
+    border-color: oklch(0.42 0.055 145 / 0.85);
+    transform: scale(1.08) translateY(-1px);
+    box-shadow:
+      0 10px 28px -4px oklch(0.42 0.055 145 / 0.5),
+      0 4px 10px oklch(0.42 0.055 145 / 0.28),
+      inset 0 1.5px 0 oklch(1 0 0 / 0.5),
+      inset 0 -1px 0 oklch(0.30 0.045 145 / 0.5),
+      inset 0 0 18px oklch(0.86 0.12 75 / 0.35);
   }
   .swiper-button-disabled {
-    opacity: 0.35 !important;
+    opacity: 0.4 !important;
+    filter: saturate(0.5);
+  }
+
+  /* ── Reusable crystal nav button class (for non-Swiper sliders) ──
+     Same crystallized look as .swiper-button-prev/next above, but as a
+     utility class for custom <button> elements (e.g. Gallery prev/next).
+     Apply alongside `flex h-14 w-14 items-center justify-center rounded-full`. */
+  .crystal-nav-btn {
+    color: var(--moss);
+    background:
+      linear-gradient(135deg,
+        oklch(0.95 0.04 145 / 0.55) 0%,
+        oklch(0.78 0.06 145 / 0.42) 45%,
+        oklch(0.65 0.08 145 / 0.55) 100%);
+    backdrop-filter: blur(14px) saturate(1.4);
+    -webkit-backdrop-filter: blur(14px) saturate(1.4);
+    border: 1.5px solid oklch(0.55 0.085 145 / 0.55);
+    box-shadow:
+      0 6px 20px -4px oklch(0.30 0.045 145 / 0.32),
+      0 2px 6px oklch(0.30 0.045 145 / 0.18),
+      inset 0 1.5px 0 oklch(1 0 0 / 0.7),
+      inset 0 -1px 0 oklch(0.42 0.055 145 / 0.35),
+      inset 0 0 12px oklch(0.78 0.10 75 / 0.18);
+    transition: all 280ms cubic-bezier(0.22, 1, 0.36, 1);
+    position: relative;
+    overflow: hidden;
+  }
+  /* Crystal top-edge highlight */
+  .crystal-nav-btn::before {
+    content: "";
+    position: absolute;
+    inset: 2px;
+    border-radius: 9999px;
+    background: linear-gradient(
+      180deg,
+      oklch(1 0 0 / 0.45) 0%,
+      oklch(1 0 0 / 0) 35%
+    );
+    pointer-events: none;
+    z-index: 0;
+  }
+  /* The icon inside should sit above the highlight */
+  .crystal-nav-btn > * {
+    position: relative;
+    z-index: 1;
+  }
+  .crystal-nav-btn:hover {
+    background:
+      linear-gradient(135deg,
+        oklch(0.78 0.10 145 / 0.85) 0%,
+        oklch(0.55 0.12 145 / 0.92) 50%,
+        oklch(0.42 0.10 145 / 0.95) 100%);
+    color: oklch(0.99 0.005 95);
+    border-color: oklch(0.42 0.055 145 / 0.85);
+    transform: scale(1.08) translateY(-1px);
+    box-shadow:
+      0 10px 28px -4px oklch(0.42 0.055 145 / 0.5),
+      0 4px 10px oklch(0.42 0.055 145 / 0.28),
+      inset 0 1.5px 0 oklch(1 0 0 / 0.5),
+      inset 0 -1px 0 oklch(0.30 0.045 145 / 0.5),
+      inset 0 0 18px oklch(0.86 0.12 75 / 0.35);
+  }
+  .crystal-nav-btn:active {
+    transform: scale(0.98);
+  }
+  .crystal-nav-btn:focus-visible {
+    outline: 2px solid var(--sage);
+    outline-offset: 3px;
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -341,14 +531,15 @@
 
 /* ============================================================
    Themed app loader — shown until first paint is hydrated.
+   Eco-Farm palette: sage + amber on cream.
    See src/components/ui/themed-loader.tsx
    ============================================================ */
-@keyframes cf-loader-pulse {
+@keyframes wvf-loader-pulse {
   0%, 100% { opacity: 0.55; transform: scale(0.92); }
   50%      { opacity: 1;    transform: scale(1); }
 }
 
-@keyframes cf-loader-spin {
+@keyframes wvf-loader-spin {
   to { transform: rotate(360deg); }
 }
 
@@ -360,8 +551,8 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background: var(--bg, oklch(0.18 0.012 145));
-  color: var(--cream, oklch(0.96 0.005 95));
+  background: var(--bg, oklch(0.975 0.012 95));
+  color: var(--moss, oklch(0.42 0.055 145));
   transition: opacity 360ms ease-out, visibility 360ms ease-out;
 }
 
@@ -379,9 +570,9 @@
   align-items: center;
   justify-content: center;
   border-radius: 9999px;
-  background: oklch(0.78 0.13 80 / 0.12);
-  color: oklch(0.78 0.13 80);
-  animation: cf-loader-pulse 1.6s ease-in-out infinite;
+  background: oklch(0.55 0.085 145 / 0.14);
+  color: oklch(0.55 0.085 145);
+  animation: wvf-loader-pulse 1.6s ease-in-out infinite;
 }
 
 .cf-app-loader__mark::before {
@@ -389,26 +580,24 @@
   position: absolute;
   inset: 0;
   border-radius: 9999px;
-  border: 2px solid oklch(0.78 0.13 80 / 0.4);
+  border: 2px solid oklch(0.55 0.085 145 / 0.42);
   border-top-color: transparent;
-  animation: cf-loader-spin 1.2s linear infinite;
+  animation: wvf-loader-spin 1.2s linear infinite;
 }
 
 .cf-app-loader__label {
   margin-top: 1.25rem;
-  font-family: var(--font-cormorant), ui-serif, Georgia, serif;
+  font-family: var(--font-bricolage), ui-serif, Georgia, serif;
   font-size: 1rem;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: oklch(0.86 0.08 80);
+  color: oklch(0.45 0.075 145);
   opacity: 0.85;
 }
 
 /* ============================================================
    Image loader — shown over any <OptimizedImage> while it loads.
-   Reusable, single-source. Uses the same brand palette as the
-   ThemedAppLoader (src/components/ui/themed-loader.tsx) but a smaller
-   inline variant.
+   Eco-Farm palette.
    ============================================================ */
 .cf-img-loader {
   position: absolute;
@@ -417,7 +606,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: oklch(0.78 0.13 80 / 0.06);
+  background: oklch(0.55 0.085 145 / 0.06);
   pointer-events: none;
   transition: opacity 300ms ease-out;
 }
@@ -428,143 +617,29 @@
   height: 1.75rem;
   width: 1.75rem;
   border-radius: 9999px;
-  border: 2px solid oklch(0.78 0.13 80 / 0.25);
-  border-top-color: oklch(0.78 0.13 80 / 0.9);
-  animation: cf-loader-spin 1.2s linear infinite;
+  border: 2px solid oklch(0.55 0.085 145 / 0.25);
+  border-top-color: oklch(0.55 0.085 145 / 0.9);
+  animation: wvf-loader-spin 1.2s linear infinite;
 }
 
 @media (prefers-reduced-motion: reduce) {
   .cf-img-loader__mark {
     animation: none;
-    border-top-color: oklch(0.78 0.13 80 / 0.5);
-  }
-}
-
-/* ============================================================
-   View Transitions API — reduced-motion guard
-   Refs: https://nextjs.org/docs/app/guides/view-transitions
-   ============================================================ */
-@media (prefers-reduced-motion: reduce) {
-  ::view-transition-old(*),
-  ::view-transition-new(*) {
-    animation: none !important;
-    animation-duration: 0.01ms !important;
-    animation-delay: 0ms !important;
-  }
-}
-
-/* ============================================================
-   Themed app loader — shown until first paint is hydrated.
-   See src/components/ui/themed-loader.tsx
-   ============================================================ */
-@keyframes cf-loader-pulse {
-  0%, 100% { opacity: 0.55; transform: scale(0.92); }
-  50%      { opacity: 1;    transform: scale(1); }
-}
-
-@keyframes cf-loader-spin {
-  to { transform: rotate(360deg); }
-}
-
-.cf-app-loader {
-  position: fixed;
-  inset: 0;
-  z-index: 9999;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  background: var(--bg, oklch(0.18 0.012 145));
-  color: var(--cream, oklch(0.96 0.005 95));
-  transition: opacity 360ms ease-out, visibility 360ms ease-out;
-}
-
-.cf-app-loader.is-hidden {
-  opacity: 0;
-  visibility: hidden;
-  pointer-events: none;
-}
-
-.cf-app-loader__mark {
-  position: relative;
-  display: inline-flex;
-  height: 4rem;
-  width: 4rem;
-  align-items: center;
-  justify-content: center;
-  border-radius: 9999px;
-  background: oklch(0.78 0.13 80 / 0.12);
-  color: oklch(0.78 0.13 80);
-  animation: cf-loader-pulse 1.6s ease-in-out infinite;
-}
-
-.cf-app-loader__mark::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: 9999px;
-  border: 2px solid oklch(0.78 0.13 80 / 0.4);
-  border-top-color: transparent;
-  animation: cf-loader-spin 1.2s linear infinite;
-}
-
-.cf-app-loader__label {
-  margin-top: 1.25rem;
-  font-family: var(--font-cormorant), ui-serif, Georgia, serif;
-  font-size: 1rem;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: oklch(0.86 0.08 80);
-  opacity: 0.85;
-}
-
-/* ============================================================
-   Image loader — shown over any <OptimizedImage> while it loads.
-   Reusable, single-source. Uses the same brand palette as the
-   ThemedAppLoader but a smaller inline variant.
-   ============================================================ */
-.cf-img-loader {
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: oklch(0.78 0.13 80 / 0.06);
-  pointer-events: none;
-  transition: opacity 300ms ease-out;
-}
-
-.cf-img-loader__mark {
-  position: relative;
-  display: inline-block;
-  height: 1.75rem;
-  width: 1.75rem;
-  border-radius: 9999px;
-  border: 2px solid oklch(0.78 0.13 80 / 0.25);
-  border-top-color: oklch(0.78 0.13 80 / 0.9);
-  animation: cf-loader-spin 1.2s linear infinite;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .cf-img-loader__mark {
-    animation: none;
-    border-top-color: oklch(0.78 0.13 80 / 0.5);
+    border-top-color: oklch(0.55 0.085 145 / 0.5);
   }
 }
 
 /* ============================================================
    BookingDatePicker — themed popup modal (LIGHT — matches page)
    Refs: src/components/ui/booking-date-picker.tsx
-   Uses the country-farm palette: warm cream surface, dark forest
-   text, amber gold accents, Cormorant Garamond display font.
+   Eco-Farm palette: cream surface, sage primary, amber accents.
    ============================================================ */
 .cf-date-dialog {
   background: var(--surface-lowest, oklch(1 0 0));
-  color: var(--on-surface, oklch(0.20 0.018 145));
-  border-radius: 1rem;
-  box-shadow: 0 20px 60px -10px oklch(0.20 0.018 145 / 0.18),
-              0 8px 24px -4px oklch(0.20 0.018 145 / 0.12),
+  color: var(--on-surface, oklch(0.25 0.015 145));
+  border-radius: 1.25rem;
+  box-shadow: 0 20px 60px -10px oklch(0.42 0.055 145 / 0.20),
+              0 8px 24px -4px oklch(0.42 0.055 145 / 0.12),
               inset 0 1px 0 oklch(1 0 0 / 0.6);
   transform-origin: var(--radix-dialog-content-transform-origin, center);
 }
@@ -575,35 +650,53 @@
   justify-content: space-between;
   gap: 1rem;
   padding: 1.25rem 1.25rem 1rem;
-  border-bottom: 1px solid var(--outline-variant, oklch(0.85 0.014 85));
+  border-bottom: 1px solid var(--outline-variant, oklch(0.86 0.012 95));
 }
 
 .cf-date-dialog__icon {
-  display: inline-flex;
+  /* Use flex (not inline-flex) + explicit width/height to make the
+     circular badge a perfect square. The Material Symbols glyph has
+     built-in ascender/descender padding that throws off centering,
+     so we set line-height: 1 and an explicit font-size, then nudge
+     the glyph with a translateY for optical centering. */
+  display: flex !important;
   align-items: center;
   justify-content: center;
   height: 2.25rem;
   width: 2.25rem;
   border-radius: 9999px;
-  background: oklch(0.70 0.13 70 / 0.14);
-  color: var(--tertiary, oklch(0.70 0.13 70));
+  background: oklch(0.55 0.085 145 / 0.14);
+  color: var(--primary, oklch(0.55 0.085 145));
   font-variation-settings: "FILL" 1, "wght" 500, "GRAD" 0, "opsz" 24;
+  /* Force the glyph itself to be a fixed size with no extra leading */
+  font-size: 1.25rem;
+  line-height: 1;
+  text-align: center;
+  /* Optical centering nudge — Material Symbols glyphs sit ~6px too
+     high inside a 36px badge because of the font's built-in
+     ascender/descender padding. Push the glyph down 3px to optically
+     center it. */
+  transform: translateY(3px);
+  /* Make sure the icon never pushes the badge out of round */
+  overflow: hidden;
+  flex-shrink: 0;
+  box-sizing: border-box;
 }
 
 .cf-date-dialog__eyebrow {
-  font-family: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  font-family: var(--font-jakarta), ui-sans-serif, system-ui, sans-serif;
   font-size: 0.65rem;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: var(--on-surface-variant, oklch(0.42 0.020 145));
+  color: var(--on-surface-variant, oklch(0.45 0.020 145));
   margin: 0;
 }
 
 .cf-date-dialog__title {
-  font-family: var(--font-cormorant), ui-serif, Georgia, serif;
+  font-family: var(--font-bricolage), ui-serif, Georgia, serif;
   font-size: 1.05rem;
   font-weight: 500;
-  color: var(--on-surface, oklch(0.20 0.018 145));
+  color: var(--on-surface, oklch(0.25 0.015 145));
   margin: 0.1rem 0 0;
   letter-spacing: 0.01em;
 }
@@ -613,9 +706,9 @@
   align-items: center;
   padding: 0.25rem 0.6rem;
   border-radius: 9999px;
-  background: oklch(0.70 0.13 70 / 0.12);
-  color: var(--tertiary, oklch(0.70 0.13 70));
-  font-family: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  background: oklch(0.72 0.115 75 / 0.14);
+  color: var(--tertiary, oklch(0.72 0.115 75));
+  font-family: var(--font-jakarta), ui-sans-serif, system-ui, sans-serif;
   font-size: 0.65rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -631,7 +724,7 @@
 .cf-calendar,
 .cf-calendar [data-slot="calendar"] {
   background: transparent !important;
-  color: var(--on-surface, oklch(0.20 0.018 145)) !important;
+  color: var(--on-surface, oklch(0.25 0.015 145)) !important;
   width: 100%;
   --cell-size: 2.6rem;
 }
@@ -639,16 +732,16 @@
 .cf-calendar .rdp-month_caption,
 .cf-calendar [class*="caption_label"],
 .cf-calendar .rdp-caption_label {
-  font-family: var(--font-cormorant), ui-serif, Georgia, serif !important;
+  font-family: var(--font-bricolage), ui-serif, Georgia, serif !important;
   font-size: 1.05rem !important;
   font-weight: 500 !important;
-  color: var(--on-surface, oklch(0.20 0.018 145)) !important;
+  color: var(--on-surface, oklch(0.25 0.015 145)) !important;
 }
 
 .cf-calendar .rdp-weekday,
 .cf-calendar [class*="weekday"] {
-  color: var(--on-surface-variant, oklch(0.42 0.020 145)) !important;
-  font-family: var(--font-inter), ui-sans-serif, system-ui, sans-serif !important;
+  color: var(--on-surface-variant, oklch(0.45 0.020 145)) !important;
+  font-family: var(--font-jakarta), ui-sans-serif, system-ui, sans-serif !important;
   font-size: 0.7rem !important;
   font-weight: 600 !important;
   letter-spacing: 0.08em !important;
@@ -657,50 +750,46 @@
 
 .cf-calendar .rdp-button,
 .cf-calendar button[class*="day"] {
-  font-family: var(--font-inter), ui-sans-serif, system-ui, sans-serif !important;
+  font-family: var(--font-jakarta), ui-sans-serif, system-ui, sans-serif !important;
   font-size: 0.85rem !important;
   font-weight: 600 !important;
-  color: var(--on-surface, oklch(0.20 0.018 145)) !important;
+  color: var(--on-surface, oklch(0.25 0.015 145)) !important;
   border-radius: 0.5rem !important;
   transition: all 180ms cubic-bezier(0.4, 0, 0.2, 1) !important;
 }
 
 .cf-calendar .rdp-button:hover,
 .cf-calendar button[class*="day"]:not(:disabled):hover {
-  background: oklch(0.70 0.13 70 / 0.18) !important;
-  color: var(--on-surface, oklch(0.20 0.018 145)) !important;
+  background: oklch(0.55 0.085 145 / 0.18) !important;
+  color: var(--on-surface, oklch(0.25 0.015 145)) !important;
 }
 
 .cf-calendar .rdp-today,
 .cf-calendar [class*="today"] {
-  background: oklch(0.70 0.13 70 / 0.10) !important;
-  color: var(--tertiary, oklch(0.70 0.13 70)) !important;
+  background: oklch(0.55 0.085 145 / 0.12) !important;
+  color: var(--primary, oklch(0.55 0.085 145)) !important;
   font-weight: 700 !important;
 }
 
 .cf-calendar .rdp-selected,
 .cf-calendar button[data-selected-single="true"],
 .cf-calendar button[aria-pressed="true"] {
-  background: var(--tertiary, oklch(0.70 0.13 70)) !important;
+  background: var(--primary, oklch(0.55 0.085 145)) !important;
   color: oklch(0.99 0 0) !important;
   font-weight: 600 !important;
-  box-shadow: 0 4px 12px -2px oklch(0.70 0.13 70 / 0.45) !important;
+  box-shadow: 0 4px 12px -2px oklch(0.55 0.085 145 / 0.45) !important;
 }
 .cf-calendar .rdp-selected:hover,
 .cf-calendar button[data-selected-single="true"]:hover {
-  background: oklch(0.65 0.13 65) !important;
+  background: oklch(0.48 0.085 145) !important;
 }
 
-/* Disabled (past dates) — 45% opacity (visible) + red-ish strike-through.
-   IMPORTANT: only target buttons that are actually :disabled, NOT buttons
-   whose class attribute contains the substring "disabled" (Tailwind ships
-   `disabled:opacity-50` etc. on every variant-aware button, which would
-   match `[class*="disabled"]` and accidentally strike through every day). */
+/* Disabled (past dates) — 45% opacity (visible) + red-ish strike-through. */
 .cf-calendar .rdp-disabled,
 .cf-calendar button:disabled,
 .cf-calendar td.rdp-disabled button,
 .cf-calendar td[class*="disabled"] button {
-  color: oklch(0.20 0.018 145 / 0.45) !important;
+  color: oklch(0.25 0.015 145 / 0.45) !important;
   cursor: not-allowed !important;
   text-decoration: line-through !important;
   text-decoration-color: oklch(0.65 0.18 25 / 0.55) !important;
@@ -708,7 +797,6 @@
   opacity: 1 !important;
 }
 
-/* Active (non-disabled) days — make sure no strike-through ever leaks in. */
 .cf-calendar .rdp-button:not(:disabled),
 .cf-calendar button[class*="day"]:not(:disabled),
 .cf-calendar td:not(.rdp-disabled) button:not(:disabled) {
@@ -717,7 +805,7 @@
 
 .cf-calendar .rdp-outside,
 .cf-calendar [class*="outside"] {
-  color: oklch(0.20 0.018 145 / 0.45) !important;
+  color: oklch(0.25 0.015 145 / 0.45) !important;
 }
 
 .cf-calendar .rdp-button_previous,
@@ -725,11 +813,11 @@
 .cf-calendar [class*="button_previous"],
 .cf-calendar [class*="button_next"] {
   border-radius: 9999px !important;
-  color: var(--tertiary, oklch(0.70 0.13 70)) !important;
+  color: var(--primary, oklch(0.55 0.085 145)) !important;
 }
 .cf-calendar .rdp-button_previous:hover,
 .cf-calendar .rdp-button_next:hover {
-  background: oklch(0.70 0.13 70 / 0.12) !important;
+  background: oklch(0.55 0.085 145 / 0.12) !important;
 }
 
 .cf-date-dialog__footer {
@@ -738,41 +826,41 @@
   justify-content: space-between;
   gap: 1rem;
   padding: 0.85rem 1.25rem;
-  border-top: 1px solid var(--outline-variant, oklch(0.85 0.014 85));
-  background: var(--surface-high, oklch(0.95 0.014 85));
+  border-top: 1px solid var(--outline-variant, oklch(0.86 0.012 95));
+  background: var(--surface-high, oklch(0.95 0.016 95));
 }
 
 .cf-date-dialog__footer-hint {
   display: flex;
   align-items: center;
-  font-family: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  font-family: var(--font-jakarta), ui-sans-serif, system-ui, sans-serif;
   font-size: 0.7rem;
-  color: var(--on-surface-variant, oklch(0.42 0.020 145));
+  color: var(--on-surface-variant, oklch(0.45 0.020 145));
   letter-spacing: 0.02em;
 }
 
 .cf-date-dialog__close {
-  font-family: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  font-family: var(--font-jakarta), ui-sans-serif, system-ui, sans-serif;
   font-size: 0.75rem;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.12em;
-  color: var(--tertiary, oklch(0.70 0.13 70));
+  color: var(--primary, oklch(0.55 0.085 145));
   padding: 0.4rem 0.85rem;
   border-radius: 0.5rem;
-  border: 1px solid oklch(0.70 0.13 70 / 0.3);
+  border: 1px solid oklch(0.55 0.085 145 / 0.3);
   background: transparent;
   cursor: pointer;
   transition: all 180ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 .cf-date-dialog__close:hover {
-  background: oklch(0.70 0.13 70 / 0.12);
-  border-color: oklch(0.70 0.13 70 / 0.55);
-  color: var(--on-surface, oklch(0.20 0.018 145));
+  background: oklch(0.55 0.085 145 / 0.12);
+  border-color: oklch(0.55 0.085 145 / 0.55);
+  color: var(--on-surface, oklch(0.25 0.015 145));
 }
 .cf-date-dialog__close:focus-visible {
   outline: none;
-  box-shadow: 0 0 0 3px oklch(0.70 0.13 70 / 0.3);
+  box-shadow: 0 0 0 3px oklch(0.55 0.085 145 / 0.3);
 }
 
 @media (max-width: 480px) {
@@ -803,24 +891,24 @@
   min-height: auto !important;
   gap: 0.4rem !important;
   align-items: flex-start !important;
-  font-family: var(--font-inter), ui-sans-serif, system-ui, sans-serif !important;
+  font-family: var(--font-jakarta), ui-sans-serif, system-ui, sans-serif !important;
   letter-spacing: 0.005em !important;
 }
 
 .cf-toast__title {
-  font-family: var(--font-cormorant), ui-serif, Georgia, serif !important;
+  font-family: var(--font-bricolage), ui-serif, Georgia, serif !important;
   font-size: 1rem !important;
   font-weight: 500 !important;
   letter-spacing: 0.01em !important;
-  color: oklch(0.96 0.005 95) !important;
+  color: oklch(0.25 0.015 145) !important;
   margin: 0 !important;
   line-height: 1.3 !important;
 }
 
 .cf-toast__desc {
-  font-family: var(--font-inter), ui-sans-serif, system-ui, sans-serif !important;
+  font-family: var(--font-jakarta), ui-sans-serif, system-ui, sans-serif !important;
   font-size: 0.82rem !important;
-  color: oklch(0.92 0.005 95 / 0.78) !important;
+  color: oklch(0.42 0.020 145 / 0.85) !important;
   margin: 0.15rem 0 0 !important;
   line-height: 1.5 !important;
 }
@@ -831,30 +919,30 @@
 }
 
 .cf-toast__loader {
-  border-color: oklch(0.78 0.13 80 / 0.25) !important;
-  border-top-color: oklch(0.78 0.13 80) !important;
+  border-color: oklch(0.55 0.085 145 / 0.25) !important;
+  border-top-color: oklch(0.55 0.085 145) !important;
 }
 
 .cf-toast__action {
-  font-family: var(--font-inter), ui-sans-serif, system-ui, sans-serif !important;
+  font-family: var(--font-jakarta), ui-sans-serif, system-ui, sans-serif !important;
   font-size: 0.72rem !important;
   font-weight: 600 !important;
   text-transform: uppercase !important;
   letter-spacing: 0.12em !important;
   padding: 0.35rem 0.7rem !important;
   border-radius: 0.4rem !important;
-  background: oklch(0.78 0.13 80 / 0.15) !important;
-  color: oklch(0.86 0.08 80) !important;
-  border: 1px solid oklch(0.78 0.13 80 / 0.3) !important;
+  background: oklch(0.55 0.085 145 / 0.15) !important;
+  color: oklch(0.42 0.055 145) !important;
+  border: 1px solid oklch(0.55 0.085 145 / 0.3) !important;
   transition: all 180ms cubic-bezier(0.4, 0, 0.2, 1) !important;
 }
 .cf-toast__action:hover {
-  background: oklch(0.78 0.13 80 / 0.28) !important;
-  color: oklch(0.96 0.005 95) !important;
+  background: oklch(0.55 0.085 145 / 0.28) !important;
+  color: oklch(0.99 0.005 95) !important;
 }
 
 .cf-toast__cancel {
-  font-family: var(--font-inter), ui-sans-serif, system-ui, sans-serif !important;
+  font-family: var(--font-jakarta), ui-sans-serif, system-ui, sans-serif !important;
   font-size: 0.72rem !important;
   font-weight: 600 !important;
   text-transform: uppercase !important;
@@ -862,32 +950,32 @@
   padding: 0.35rem 0.7rem !important;
   border-radius: 0.4rem !important;
   background: transparent !important;
-  color: oklch(0.92 0.005 95 / 0.7) !important;
-  border: 1px solid oklch(0.92 0.005 95 / 0.18) !important;
+  color: oklch(0.42 0.020 145 / 0.7) !important;
+  border: 1px solid oklch(0.42 0.020 145 / 0.18) !important;
 }
 
 .cf-toast__close {
-  color: oklch(0.92 0.005 95 / 0.4) !important;
+  color: oklch(0.42 0.020 145 / 0.4) !important;
   transition: color 180ms cubic-bezier(0.4, 0, 0.2, 1) !important;
 }
 .cf-toast__close:hover {
-  color: oklch(0.96 0.005 95) !important;
+  color: oklch(0.25 0.015 145) !important;
 }
 
 .cf-toast[data-type="success"] {
-  border-left: 3px solid oklch(0.78 0.13 80) !important;
+  border-left: 3px solid oklch(0.55 0.085 145) !important;
 }
 .cf-toast[data-type="error"] {
   border-left: 3px solid oklch(0.65 0.18 25) !important;
 }
 .cf-toast[data-type="warning"] {
-  border-left: 3px solid oklch(0.75 0.15 75) !important;
+  border-left: 3px solid oklch(0.72 0.115 75) !important;
 }
 .cf-toast[data-type="info"] {
-  border-left: 3px solid oklch(0.78 0.13 80 / 0.5) !important;
+  border-left: 3px solid oklch(0.55 0.085 145 / 0.5) !important;
 }
 .cf-toast[data-type="loading"] {
-  border-left: 3px solid oklch(0.78 0.13 80 / 0.6) !important;
+  border-left: 3px solid oklch(0.55 0.085 145 / 0.6) !important;
 }
 
 @media (max-width: 480px) {

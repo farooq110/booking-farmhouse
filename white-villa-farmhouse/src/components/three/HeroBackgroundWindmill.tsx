@@ -24,7 +24,7 @@ import { useReducedMotion } from "@/lib/hooks/useReducedMotion";
  *    enough for a low-opacity background element.
  *
  * Kept:
- *  - Procedural windmill geometry (the Casa De Fazenda theme)
+ *  - Procedural windmill geometry (the White Villa FarmHouse theme)
  *  - Continuous blade rotation (signature motion)
  *  - prefers-reduced-motion fallback (gentler spin)
  */

@@ -25,7 +25,7 @@ const REASSURANCE_POINTS = [
 
 /**
  * EnquireNow — inline enquiry section where guests send a stay request
- * directly to the Casa De Fazenda owner.
+ * directly to the White Villa FarmHouse owner.
  *
  * This is NOT a modal. The form lives in the page so guests can scan the
  * fields without clicking anything first. The form is the section.
@@ -43,12 +43,12 @@ export function EnquireNow() {
             <SectionLabel>Enquire Directly</SectionLabel>
             <SectionHeading>
               Tell the owner when you'd like
-              <span className="text-moss-gradient italic"> to arrive.</span>
+              <span className="text-sage-gradient italic"> to arrive.</span>
             </SectionHeading>
             <p className="mt-6 text-base sm:text-lg text-on-surface-variant text-pretty leading-relaxed">
-              Casa De Fazenda is owned and hosted by one family. Your enquiry lands
-              directly in their inbox — no middleman, no booking fee. Reply within
-              24 hours.
+              White Villa FarmHouse is owned and hosted by one family. Your
+              enquiry lands directly in their inbox — no middleman, no booking
+              fee. Reply within 24 hours.
             </p>
 
             <ul className="mt-8 space-y-3">

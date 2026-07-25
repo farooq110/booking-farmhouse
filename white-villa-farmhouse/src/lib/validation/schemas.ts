@@ -4,7 +4,7 @@
  * Swapping zod → valibot / yup means editing only this file.
  *
  * Note: this form is for GUESTS who want to enquire about staying at
- * Casa De Fazenda. The enquiry goes DIRECTLY to the Casa De Fazenda owner —
+ * White Villa FarmHouse. The enquiry goes DIRECTLY to the White Villa FarmHouse owner —
  * no middleman, no platform fee, no commission. The owner manages
  * their own property and replies to guests personally.
  */
@@ -83,7 +83,7 @@ export const guestEnquirySchema = z.object({
     .number({ message: "Please tell us how many guests." })
     .int()
     .min(1, "At least one guest is required.")
-    .max(16, "Casa De Fazenda accommodates up to 16 guests per stay."),
+    .max(16, "White Villa FarmHouse accommodates up to 16 guests per stay."),
 
   timeSlot: z
     .enum(["morning", "afternoon", "evening", "full-day"], {
@@ -125,23 +125,23 @@ export const TIME_SLOT_LABELS = {
 } as const;
 
 /**
- * Bookable services at Casa De Fazenda.
+ * Bookable services at White Villa FarmHouse.
  * The `id` must match the service _id in the backend.
  * Change these to match your backend's service catalogue.
  */
 export const SERVICE_OPTIONS = [
   {
-    id: "casa-de-fazenda-full-estate",
+    id: "white-villa-farmhouse-full-estate",
     label: "Full Estate Booking",
-    description: "Entire Casa De Fazenda + all facilities (pool, park, gaming, sports)",
+    description: "Entire White Villa FarmHouse + all facilities (pool, park, gaming, sports)",
   },
   {
-    id: "casa-de-fazenda-day-pass",
+    id: "white-villa-farmhouse-day-pass",
     label: "Day Pass",
     description: "Daytime access to pool, gardens, and sports facilities",
   },
   {
-    id: "casa-de-fazenda-event",
+    id: "white-villa-farmhouse-event",
     label: "Event / Celebration",
     description: "Private event booking with full estate access",
   },
@@ -149,7 +149,7 @@ export const SERVICE_OPTIONS = [
 
 export const ADDON_OPTIONS = [
   { id: "chef", label: "Private chef & sommelier (in-house)" },
-  { id: "breakfast", label: "Casa De Fazenda breakfast basket daily" },
+  { id: "breakfast", label: "White Villa FarmHouse breakfast basket daily" },
   { id: "spa", label: "On-site spa therapist" },
   { id: "orchard-tour", label: "Guided orchard & garden walk" },
   { id: "horseback", label: "Sunrise horseback trail ride" },

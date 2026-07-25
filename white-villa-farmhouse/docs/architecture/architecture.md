@@ -1,4 +1,4 @@
-# Casa De Fazenda — Project Architecture
+# White Villa FarmHouse — Project Architecture
 
 > A single-page marketing site for a luxury farmhouse rental, built around a
 > signature 3D Monstera leaf that travels with the user as they scroll.

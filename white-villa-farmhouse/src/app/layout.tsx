@@ -6,29 +6,30 @@ import { ThemedAppLoader } from "@/components/ui/themed-loader";
 import { ServiceWorkerRegister } from "@/components/ServiceWorkerRegister";
 
 export const metadata: Metadata = {
-  title: "Casa De Fazenda — A Private Resort in Gadap Town, Karachi",
+  title: "White Villa FarmHouse — A Private Eco Retreat in Taiser Town, Karachi",
   description:
-    "A private resort in Gadap Town, Karachi. Pool, gardens, gaming, and sports facilities. Owned and hosted by one family. Book directly — no middleman, no booking fees.",
+    "A private eco-farm retreat in Taiser Town, Karachi. Pool, gardens, gaming, and sports facilities. Owned and hosted by one family. Book directly — no middleman, no booking fees.",
   keywords: [
-    "Casa De Fazenda",
+    "White Villa FarmHouse",
     "private resort Karachi",
-    "Gadap Town resort",
-    "resort rental Karachi",
-    "family-owned resort",
-    "book resort directly Pakistan",
-    "luxury resort Karachi",
+    "Taiser Town farmhouse",
+    "farmhouse rental Karachi",
+    "family-owned farmhouse",
+    "book farmhouse directly Pakistan",
+    "eco farm Karachi",
+    "luxury farmhouse Karachi",
   ],
-  authors: [{ name: "Casa De Fazenda" }],
+  authors: [{ name: "White Villa FarmHouse" }],
   openGraph: {
-    title: "Casa De Fazenda — A Private Resort in Gadap Town, Karachi",
+    title: "White Villa FarmHouse — A Private Eco Retreat in Taiser Town, Karachi",
     description:
       "Owned and hosted by one family. Pool, gardens, gaming, sports. Book directly — no middleman, no booking fees.",
-    siteName: "Casa De Fazenda",
+    siteName: "White Villa FarmHouse",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Casa De Fazenda — A Private Resort in Gadap Town, Karachi",
+    title: "White Villa FarmHouse — A Private Eco Retreat in Taiser Town, Karachi",
     description:
       "Owned and hosted by one family. Book directly — no middleman, no booking fees.",
   },

@@ -1,6 +1,6 @@
-# Casa De Fazenda
+# White Villa FarmHouse
 
-> A single-page marketing website for **Casa De Fazenda**, a luxury farmhouse
+> A single-page marketing website for **White Villa FarmHouse**, a luxury farmhouse
 > rental service. Built around a signature 3D Monstera leaf that travels
 > with the user as they scroll — engineered to feel like an exclusive,
 > premium, serene retreat brand, not a generic SaaS landing page.
@@ -140,4 +140,4 @@ secrets).
 
 ## 📄 License
 
-Proprietary — © Casa De Fazenda. All rights reserved.
+Proprietary — © White Villa FarmHouse. All rights reserved.

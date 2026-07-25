@@ -1,4 +1,4 @@
-# Deploy Casa De Fazenda to AWS EC2 (with nginx)
+# Deploy White Villa FarmHouse to AWS EC2 (with nginx)
 
 > Step-by-step guide for self-hosting the Vite build on an AWS EC2 instance,
 > fronted by nginx. Use this when you want full control over the host,

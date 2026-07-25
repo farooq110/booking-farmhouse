@@ -45,7 +45,7 @@ export function ThemedToaster(props: ToasterProps) {
           loader: "cf-toast__loader",
         },
         style: {
-          fontFamily: "var(--font-inter), ui-sans-serif, system-ui, sans-serif",
+          fontFamily: "var(--font-jakarta), ui-sans-serif, system-ui, sans-serif",
           borderRadius: "0.75rem",
           boxShadow: "0 10px 30px -6px oklch(0 0 0 / 0.45), 0 4px 12px -2px oklch(0 0 0 / 0.3), inset 0 1px 0 oklch(1 0 0 / 0.05)",
           border: "1px solid var(--normal-border)",

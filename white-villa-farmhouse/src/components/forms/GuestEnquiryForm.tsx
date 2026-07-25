@@ -7,7 +7,6 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import {
   Select,
   SelectTrigger,
@@ -16,18 +15,14 @@ import {
   SelectItem,
 } from "@/components/ui/select";
 import { BookingDatePicker } from "@/components/ui/booking-date-picker";
-import { CTAButton, Icon } from "@/components/ui/luxury-primitives";
+import { Icon } from "@/components/ui/luxury-primitives";
 import {
   guestEnquirySchema,
   type GuestEnquiryValues,
-  OCCASION_LABELS,
-  TIME_SLOT_LABELS,
-  SERVICE_OPTIONS,
-  ADDON_OPTIONS,
   HOUSE_RULES,
 } from "@/lib/validation/schemas";
 import { getCalendar, createBooking } from "@/lib/api/client";
-import { API_CONFIG } from "@/data/media";
+import { API_CONFIG, FARMHOUSE } from "@/data/media";
 import type { AvailabilitySlot } from "@/types/api";
 
 /**
@@ -46,26 +41,36 @@ const todayISO = getTodayISO();
 /**
  * GuestEnquiryForm — inline form (NOT a modal) for guests to book a stay.
  *
- * API integration:
- *  - serviceId is set from environment variable (NEXT_PUBLIC_DEFAULT_SERVICE_ID)
- *  - When the user picks a date, fetches GET /availability/:serviceId/calendar
- *  - Shows available slots from the API as a select dropdown
- *  - On submit, POSTs to /bookings with the mapped fields
+ * Layout v2 — Eco-Farm "step rail":
+ *   ┌─────────────────────────────────────────────────────────┐
+ *   │  ┌──────────────┐  ┌──────────────────────────────────┐ │
+ *   │  │ STEP RAIL    │  │ SECTION 01 — Your visit          │ │
+ *   │  │ 01 Your visit│  │  · date picker                   │ │
+ *   │  │ 02 Reach you │  │  · time slot select              │ │
+ *   │  │ 03 Confirm   │  │ SECTION 02 — Reach you          │ │
+ *   │  │              │  │  · name, email, phone            │ │
+ *   │  │ SUMMARY      │  │  · notes                         │ │
+ *   │  │  · date      │  │ SECTION 03 — House rules        │ │
+ *   │  │  · slot      │  │  · rules + acknowledge checkbox │ │
+ *   │  │  · guests    │  │                                  │ │
+ *   │  └──────────────┘  └──────────────────────────────────┘ │
+ *   │  ┌──────────────────────────────────────────────────┐  │
+ *   │  │ STICKY ACTION BAR · reassurance + submit button  │  │
+ *   │  └──────────────────────────────────────────────────┘  │
+ *   └─────────────────────────────────────────────────────────┘
  *
- * Field mapping (UI → API):
- *  - serviceId          → service_id (from environment, not form)
- *  - guestName          → customer.name
- *  - email              → customer.email
- *  - phone              → customer.phone
- *  - bookingDate        → date
- *  - slot ("HH:mm-HH:mm") → slot { start, end }
- *  - notes              → notes
+ * Distinct from the previous single-column form:
+ *   - A left "step rail" with numbered sage badges + a live summary
+ *     of what the guest has entered so far.
+ *   - Form sections renumbered (01/02/03) with sage section headers
+ *     and a hairline divider.
+ *   - A sticky bottom action bar with the submit + reassurance copy
+ *     instead of an inline submit row.
  *
- * UI-only fields (NOT sent to API, kept for owner reference):
- *  - checkIn, checkOut, guests, timeSlot, occasion, addons, agreeToHouseRules
+ * API integration is unchanged — same fields, same endpoints, same
+ * error handling.
  */
 export function GuestEnquiryForm() {
-  // serviceId is applied from environment variable — single time, not changeable in form
   const serviceId = process.env.NEXT_PUBLIC_DEFAULT_SERVICE_ID || API_CONFIG.defaultServiceId;
 
   const [submitted, setSubmitted] = useState(false);
@@ -83,9 +88,6 @@ export function GuestEnquiryForm() {
     formState: { errors, isSubmitting, isValid },
   } = useForm<GuestEnquiryValues>({
     resolver: zodResolver(guestEnquirySchema),
-    // Validate on every change so `isValid` updates live — drives the
-    // disabled state of the submit button until all required fields are
-    // filled AND the house rules checkbox is checked.
     mode: "onChange",
     defaultValues: {
       bookingDate: "",
@@ -104,31 +106,19 @@ export function GuestEnquiryForm() {
     },
   });
 
-  const addons = useWatch({ control, name: "addons" }) ?? [];
   const agreeToHouseRules = useWatch({ control, name: "agreeToHouseRules" }) ?? false;
   const bookingDate = useWatch({ control, name: "bookingDate" });
   const slot = useWatch({ control, name: "slot" }) ?? "";
   const guestName = useWatch({ control, name: "guestName" }) ?? "";
   const email = useWatch({ control, name: "email" }) ?? "";
+  const phone = useWatch({ control, name: "phone" }) ?? "";
+  const notes = useWatch({ control, name: "notes" }) ?? "";
 
-  // ── Submit button enable rule ──
-  // Disabled until ALL of: required fields filled, house rules checked,
-  // not currently submitting, not currently fetching slots.
-  // `isValid` covers the Zod schema (date format + future check + email
-  // format + min name length + house rules checked).
-  const canSubmit =
-    isValid &&
-    !isSubmitting &&
-    !slotsLoading;
+  const canSubmit = isValid && !isSubmitting && !slotsLoading;
 
   // ── Fetch calendar when serviceId + bookingDate change ──
-  // Uses the result-based API client — never throws. Every error is
-  // classified and rendered via a themed toast. No UI breaks.
   useEffect(() => {
-    if (!serviceId || !bookingDate) {
-      return;
-    }
-
+    if (!serviceId || !bookingDate) return;
     let cancelled = false;
     let frame = requestAnimationFrame(() => {
       frame = 0;
@@ -139,7 +129,6 @@ export function GuestEnquiryForm() {
 
       getCalendar(serviceId, bookingDate, bookingDate).then((result) => {
         if (cancelled) return;
-
         if (result.ok) {
           const dayData = result.data.data?.[bookingDate];
           if (dayData?.is_available && dayData.slots?.length) {
@@ -151,12 +140,9 @@ export function GuestEnquiryForm() {
           setSlotsLoading(false);
           return;
         }
-
-        // ── Error path ── never throws, never breaks the tree ──
         const err = result.error;
         setSlotsLoading(false);
         setAvailableSlots([]);
-
         if (err.kind === "no-network" || err.kind === "timeout" || err.kind === "server") {
           setSlotsError(err.message);
           toast.error("Couldn't check availability", {
@@ -191,12 +177,8 @@ export function GuestEnquiryForm() {
   }, [serviceId, bookingDate, setValue]);
 
   // ── Submit ──
-  // Uses the result-based API client — never throws. Every error is
-  // classified and rendered via a themed toast with a retry / call-owner CTA.
   const onSubmit = async (data: GuestEnquiryValues) => {
     setBookingError(null);
-
-    // Parse slot "HH:mm-HH:mm" → { start, end }
     const [slotStart, slotEnd] = data.slot.split("-");
 
     const result = await createBooking({
@@ -213,15 +195,11 @@ export function GuestEnquiryForm() {
 
     if (result.ok) {
       const bookingId = result.data.data?._id ?? "pending";
-      console.info("[Casa De Fazenda] Booking confirmed:", bookingId);
-
+      console.info("[White Villa FarmHouse] Booking confirmed:", bookingId);
       toast.success("Booking confirmed!", {
         description: `Reference: ${bookingId}. The owner will be in touch within 24 hours.`,
         duration: 6000,
       });
-
-      // ── Full reset: form values, errors, validation state, AND all
-      // related component state (slots, errors, loading flags). ──
       reset({
         bookingDate: "",
         slot: "",
@@ -245,14 +223,10 @@ export function GuestEnquiryForm() {
       return;
     }
 
-    // ── Error path ── render a themed toast with the appropriate action ──
     const err = result.error;
-    console.error("[Casa De Fazenda] Booking failed:", err.kind, err.technical);
-
-    // Inline error under the submit button (always shown, regardless of kind)
+    console.error("[White Villa FarmHouse] Booking failed:", err.kind, err.technical);
     setBookingError(err.message);
 
-    // Per-kind toast with helpful actions
     if (err.kind === "no-network" || err.kind === "timeout" || err.kind === "server") {
       toast.error("Couldn't submit your booking", {
         description:
@@ -262,10 +236,7 @@ export function GuestEnquiryForm() {
               ? "The server took too long to respond. Please try again."
               : "The booking server is having issues right now. Please try again in a moment.",
         duration: 8000,
-        action: {
-          label: "Try again",
-          onClick: () => handleSubmit(onSubmit)(),
-        },
+        action: { label: "Try again", onClick: () => handleSubmit(onSubmit)() },
       });
     } else if (err.kind === "client" && err.status === 409) {
       toast.warning("This slot is already booked", {
@@ -281,380 +252,310 @@ export function GuestEnquiryForm() {
       toast.error("Couldn't submit your booking", {
         description: err.message,
         duration: 6000,
-        action: {
-          label: "Try again",
-          onClick: () => handleSubmit(onSubmit)(),
-        },
+        action: { label: "Try again", onClick: () => handleSubmit(onSubmit)() },
       });
     }
   };
 
+  // ── Success state — redesigned confirmation card ──
   if (submitted) {
     return (
-      <div className="rounded-3xl border border-outline-variant bg-surface-container-lowest p-10 text-center elevation-2">
-        <span className="material-symbols-outlined text-6xl text-tertiary">mark_email_read</span>
-        <h3 className="mt-4 font-display text-3xl text-on-surface">
-          Your booking is on its way.
-        </h3>
-        <p className="mx-auto mt-3 max-w-md text-sm text-on-surface-variant leading-relaxed">
-          Thank you for choosing Casa De Fazenda. The owner reads every enquiry
-          personally and will reply within 24 hours — usually much sooner.
-        </p>
-        <CTAButton
-          variant="outline"
-          size="md"
-          className="mt-6"
-          onClick={() => {
-            // Form + all related state was already cleared on submit.
-            // Just hide the confirmation screen to reveal the empty form.
-            setSubmitted(false);
-          }}
+      <div className="relative overflow-hidden rounded-3xl border border-sage/40 bg-surface-container-lowest p-8 sm:p-12 elevation-3">
+        {/* Sage leaf glyph in the corner */}
+        <span
+          className="pointer-events-none absolute -right-10 -top-10 text-[12rem] leading-none text-sage-soft/40 select-none"
+          aria-hidden="true"
         >
-          <Icon name="refresh" className="text-base" />
-          Make another booking
-        </CTAButton>
+          <Icon name="eco" filled />
+        </span>
+        <div className="relative">
+          <span className="flex h-16 w-16 items-center justify-center rounded-full bg-sage/15 text-sage elevation-1">
+            <span className="material-symbols-outlined text-4xl">mark_email_read</span>
+          </span>
+          <h3 className="mt-5 font-display text-3xl sm:text-4xl text-on-surface">
+            Your booking is on its way.
+          </h3>
+          <p className="mx-auto mt-3 max-w-md text-sm sm:text-base text-on-surface-variant leading-relaxed">
+            Thank you for choosing White Villa FarmHouse. The owner reads every
+            enquiry personally and will reply within 24 hours — usually much sooner.
+          </p>
+          <div className="mt-6 flex flex-wrap gap-3">
+            <a
+              href={`tel:${FARMHOUSE.phone}`}
+              className="inline-flex items-center gap-2 rounded-full border border-outline-variant bg-surface-container-low px-5 py-2.5 font-sans text-[11px] uppercase tracking-luxe text-on-surface-variant transition hover:border-sage hover:text-primary state-layer"
+            >
+              <span className="material-symbols-outlined text-base">call</span>
+              Call the owner
+            </a>
+            <button
+              type="button"
+              onClick={() => setSubmitted(false)}
+              className="inline-flex items-center gap-2 rounded-full bg-sage px-5 py-2.5 font-sans text-[11px] uppercase tracking-luxe text-on-primary transition hover:bg-moss state-layer elevation-1"
+            >
+              <span className="material-symbols-outlined text-base">refresh</span>
+              Make another booking
+            </button>
+          </div>
+        </div>
       </div>
     );
   }
 
+  // ── Compute the step rail progress markers ──
+  const step1Done = !!(bookingDate && slot);
+  const step2Done = !!(guestName && email);
+  const step3Done = !!agreeToHouseRules;
+
+  // Pretty-print the selected slot for the summary
+  const slotLabel = slot
+    ? slot.replace("-", " – ")
+    : (slotsLoading ? "Checking…" : "Not picked yet");
+
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
-      className="space-y-5 overflow-hidden rounded-2xl sm:rounded-3xl border border-outline-variant bg-surface-container-lowest p-5 sm:p-8 elevation-2"
       noValidate
+      className="relative overflow-hidden rounded-3xl border border-outline-variant bg-surface-container-lowest elevation-3"
     >
-      {/* ── Section: Date + Slot (API-driven) ── */}
-      {/* Note: serviceId is applied from env variable (NEXT_PUBLIC_DEFAULT_SERVICE_ID) */}
-      <fieldset className="space-y-5 min-w-0">
-        <legend className="flex items-center gap-2 font-sans text-[11px] uppercase tracking-luxe text-primary">
-          <span className="material-symbols-outlined text-base">event_available</span>
-          Booking details
-        </legend>
-
-        {/* Service field commented out — serviceId is set from environment variable */}
-        {/* <Field label="Service" error={errors.serviceId?.message}>
-          <Select
-            defaultValue={API_CONFIG.defaultServiceId}
-            onValueChange={(v) =>
-              setValue("serviceId", v, { shouldValidate: true })
-            }
-          >
-            <SelectTrigger className="border-outline-variant bg-surface-container-low text-on-surface">
-              <SelectValue placeholder="Choose a service" />
-            </SelectTrigger>
-            <SelectContent>
-              {SERVICE_OPTIONS.map((s) => (
-                <SelectItem key={s.id} value={s.id}>
-                  {s.label}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </Field> */}
-
-        <Field label="Booking date" error={errors.bookingDate?.message}>
-          <BookingDatePicker
-            value={bookingDate}
-            onChange={(val) => setValue("bookingDate", val, { shouldValidate: true })}
-            min={todayISO}
-            error={errors.bookingDate?.message}
-          />
-        </Field>
-
-        <Field
-          label="Available time slot"
-          error={errors.slot?.message || slotsError || undefined}
-          hint={
-            slotsLoading
-              ? "Checking availability…"
-              : availableSlots.length > 0
-                ? `${availableSlots.length} slot${availableSlots.length === 1 ? "" : "s"} available${
-                    availableSlots[0]?.price ? ` · from $${availableSlots[0].price}` : ""
-                  }`
-                : "Pick a date to see available slots."
-          }
+      {/* ── Sage top accent bar with leaf glyph ── */}
+      <div className="relative h-1.5 bg-gradient-to-r from-sage via-sage-soft to-sage">
+        <span
+          className="absolute left-6 top-1/2 -translate-y-1/2 flex h-7 w-7 items-center justify-center rounded-full bg-surface-lowest text-primary ring-1 ring-sage/40 elevation-1"
+          aria-hidden="true"
         >
-          {slotsLoading ? (
-            <div className="flex items-center gap-3 rounded-md border border-outline-variant bg-surface-container-low px-4 py-3 text-sm text-on-surface-variant animate-pulse">
-              <span className="material-symbols-outlined text-base text-outline animate-spin">
-                hourglass_top
-              </span>
-              <span>Fetching available time slots…</span>
-            </div>
-          ) : availableSlots.length === 0 ? (
-            <div className="flex items-center gap-2 rounded-md border border-outline-variant bg-surface-container-low px-3 py-2.5 text-sm text-on-surface-variant">
-              <span className="material-symbols-outlined text-base text-outline">
-                schedule
-              </span>
-              {slotsError ? "No slots available" : "No slots loaded yet"}
-            </div>
-          ) : (
-            <Select
-              onValueChange={(v) => setValue("slot", v, { shouldValidate: true })}
-            >
-              <SelectTrigger className="border-outline-variant bg-surface-container-low text-on-surface">
-                <SelectValue placeholder="Choose a time slot" />
-              </SelectTrigger>
-              <SelectContent>
-                {availableSlots.map((slot) => (
-                  <SelectItem key={`${slot.start}-${slot.end}`} value={`${slot.start}-${slot.end}`}>
-                    <span className="flex items-center gap-2">
-                      <span className="material-symbols-outlined text-sm">schedule</span>
-                      {slot.start} – {slot.end}
-                      {slot.price ? ` · $${slot.price}` : ""}
-                    </span>
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          )}
-        </Field>
-      </fieldset>
-
-      <div className="h-px bg-outline-variant/60" />
-
-      {/* ── Section: Your contact ── */}
-      <fieldset className="space-y-5 min-w-0">
-        <legend className="flex items-center gap-2 font-sans text-[11px] uppercase tracking-luxe text-primary">
-          <span className="material-symbols-outlined text-base">person</span>
-          Your contact
-        </legend>
-
-        <Field label="Your name" error={errors.guestName?.message}>
-          <Input
-            {...register("guestName")}
-            autoComplete="name"
-            className="border-outline-variant bg-surface-container-low text-on-surface"
-            aria-invalid={!!errors.guestName}
-          />
-        </Field>
-
-        <div className="grid min-w-0 gap-5 sm:grid-cols-2">
-          <Field label="Email" error={errors.email?.message}>
-            <Input
-              type="email"
-              {...register("email")}
-              autoComplete="email"
-              className="border-outline-variant bg-surface-container-low text-on-surface"
-              aria-invalid={!!errors.email}
-            />
-          </Field>
-          <Field label="Phone (optional)" error={errors.phone?.message}>
-            <Input
-              type="tel"
-              {...register("phone")}
-              autoComplete="tel"
-              className="border-outline-variant bg-surface-container-low text-on-surface"
-              aria-invalid={!!errors.phone}
-            />
-          </Field>
-        </div>
-      </fieldset>
-
-      <div className="h-px bg-outline-variant/60" />
-
-      {/* ── Section: Additional preferences (UI-only, not sent to API) ── */}
-      {/* <fieldset className="space-y-5 min-w-0">
-        <legend className="flex items-center gap-2 font-sans text-[11px] uppercase tracking-luxe text-primary">
-          <span className="material-symbols-outlined text-base">tune</span>
-          Additional preferences
-          <span className="ml-1 rounded-full bg-secondary-container px-2 py-0.5 text-[9px] text-on-secondary-container normal-case tracking-normal">
-            for the owner
-          </span>
-        </legend>
-
-        <div className="grid min-w-0 gap-5 sm:grid-cols-2">
-          <Field label="Preferred arrival (optional)" error={errors.checkIn?.message}>
-            <Input
-              type="date"
-              {...register("checkIn")}
-              className="border-outline-variant bg-surface-container-low text-on-surface"
-            />
-          </Field>
-          <Field label="Preferred departure (optional)" error={errors.checkOut?.message}>
-            <Input
-              type="date"
-              {...register("checkOut")}
-              className="border-outline-variant bg-surface-container-low text-on-surface"
-            />
-          </Field>
-        </div>
-
-        <div className="grid min-w-0 gap-5 sm:grid-cols-2">
-          <Field label="Number of guests" error={errors.guests?.message}>
-            <Input
-              type="number"
-              min={1}
-              max={16}
-              {...register("guests", { valueAsNumber: true })}
-              className="border-outline-variant bg-surface-container-low text-on-surface"
-              aria-invalid={!!errors.guests}
-            />
-          </Field>
-          <Field label="Preferred time of day" error={errors.timeSlot?.message}>
-            <Select
-              defaultValue="full-day"
-              onValueChange={(v) =>
-                setValue("timeSlot", v as GuestEnquiryValues["timeSlot"], {
-                  shouldValidate: true,
-                })
-              }
-            >
-              <SelectTrigger className="border-outline-variant bg-surface-container-low text-on-surface">
-                <SelectValue placeholder="Choose a slot" />
-              </SelectTrigger>
-              <SelectContent>
-                {(Object.keys(TIME_SLOT_LABELS) as Array<keyof typeof TIME_SLOT_LABELS>).map((slot) => (
-                  <SelectItem key={slot} value={slot}>
-                    {TIME_SLOT_LABELS[slot]}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </Field>
-        </div>
-      </fieldset>
-
-      <div className="h-px bg-outline-variant/60" /> */}
-
-      {/* ── Section: Occasion ── */}
-      {/* <fieldset className="space-y-3 min-w-0">
-        <legend className="flex items-center gap-2 font-sans text-[11px] uppercase tracking-luxe text-primary">
-          <span className="material-symbols-outlined text-base">celebration</span>
-          What brings you to Casa De Fazenda?
-        </legend>
-
-        <RadioGroup
-          defaultValue="holiday"
-          onValueChange={(v) =>
-            setValue("occasion", v as GuestEnquiryValues["occasion"], {
-              shouldValidate: true,
-            })
-          }
-          className="grid gap-2"
-        >
-          {(Object.keys(OCCASION_LABELS) as Array<keyof typeof OCCASION_LABELS>).map((occ) => (
-            <label
-              key={occ}
-              htmlFor={`occ-${occ}`}
-              className="flex cursor-pointer items-center gap-3 rounded-xl border border-outline-variant bg-surface-container-low px-4 py-2.5 transition hover:border-primary"
-            >
-              <RadioGroupItem value={occ} id={`occ-${occ}`} />
-              <span className="text-sm text-on-surface">{OCCASION_LABELS[occ]}</span>
-            </label>
-          ))}
-        </RadioGroup>
-        {errors.occasion?.message && (
-          <p role="alert" className="text-xs text-error">
-            {errors.occasion.message}
-          </p>
-        )}
-      </fieldset>
-
-      <div className="h-px bg-outline-variant/60" /> */}
-
-      {/* ── Section: Add-ons ── */}
-      {/* <fieldset className="space-y-3 min-w-0">
-        <legend className="flex items-center gap-2 font-sans text-[11px] uppercase tracking-luxe text-primary">
-          <span className="material-symbols-outlined text-base">room_service</span>
-          Add-ons the owner can arrange (optional)
-        </legend>
-
-        <div className="grid min-w-0 gap-3 sm:grid-cols-2">
-          {ADDON_OPTIONS.map((opt) => (
-            <label
-              key={opt.id}
-              className="flex cursor-pointer items-center gap-3 rounded-xl border border-outline-variant bg-surface-container-low px-3 py-2.5 transition hover:border-primary"
-            >
-              <Checkbox
-                checked={addons.includes(opt.id)}
-                onCheckedChange={() => {
-                  const next = addons.includes(opt.id)
-                    ? addons.filter((x) => x !== opt.id)
-                    : [...addons, opt.id];
-                  setValue("addons", next, { shouldValidate: false });
-                }}
-                className="border-outline data-[state=checked]:bg-primary data-[state=checked]:text-on-primary"
-              />
-              <span className="text-sm text-on-surface">{opt.label}</span>
-            </label>
-          ))}
-        </div>
-      </fieldset>
-
-      <div className="h-px bg-outline-variant/60" /> */}
-
-      {/* ── Section: Notes ── */}
-      {/* <Field
-        label="Anything you'd like the owner to know? (optional)"
-        error={errors.notes?.message}
-        hint="Allergies, dietary needs, celebration details, accessibility, arrival logistics…"
-      >
-        <Textarea
-          {...register("notes")}
-          rows={4}
-          className="border-outline-variant bg-surface-container-low text-on-surface"
-          placeholder="We're celebrating my mother's 70th birthday — she loves orchids and jazz…"
-        />
-      </Field> */}
-
-      {/* ── House rules ── */}
-      <div className="rounded-2xl bg-secondary-container/30 p-5">
-        <p className="flex items-center gap-2 font-sans text-[11px] uppercase tracking-luxe text-on-secondary-container">
-          <span className="material-symbols-outlined text-base">gavel</span>
-          House rules
-        </p>
-        <ul className="mt-3 grid gap-1.5 text-xs text-on-surface-variant sm:grid-cols-2">
-          {HOUSE_RULES.map((rule) => (
-            <li key={rule} className="flex items-start gap-1.5">
-              <span className="material-symbols-outlined text-sm text-tertiary">check</span>
-              {rule}
-            </li>
-          ))}
-        </ul>
-
-        <label className="mt-4 flex cursor-pointer items-start gap-3">
-          <Checkbox
-            checked={agreeToHouseRules}
-            onCheckedChange={(v) => setValue("agreeToHouseRules", v === true, { shouldValidate: true })}
-            className="mt-0.5 border-outline data-[state=checked]:bg-primary data-[state=checked]:text-on-primary"
-          />
-          <span className="text-sm text-on-surface-variant leading-relaxed">
-            I have read and agree to the house rules above.
-          </span>
-        </label>
-        {errors.agreeToHouseRules?.message && (
-          <p role="alert" className="mt-2 flex items-center gap-1 text-xs text-error">
-            <span className="material-symbols-outlined text-sm">error</span>
-            {errors.agreeToHouseRules.message}
-          </p>
-        )}
+          <Icon name="eco" className="text-sm" filled />
+        </span>
       </div>
 
-      {/* ── Booking error ── */}
-      {bookingError && (
-        <div
-          role="alert"
-          className="flex items-start gap-2 rounded-2xl bg-error/10 p-4 text-sm text-error"
-        >
-          <span className="material-symbols-outlined text-base mt-0.5">error</span>
-          <span>{bookingError}</span>
-        </div>
-      )}
+      <div className="grid grid-cols-1 lg:grid-cols-[280px_1fr]">
+        {/* ── LEFT: Step rail + live summary ── */}
+        <aside className="border-b border-outline-variant bg-surface-container-low/60 p-6 lg:border-b-0 lg:border-r">
+          <p className="font-sans text-[10px] uppercase tracking-luxe text-primary flex items-center gap-2">
+            <span className="h-px w-5 bg-sage" />
+            Booking steps
+          </p>
 
-      {/* ── Submit ── */}
-      <div className="flex flex-col items-stretch gap-3 pt-2 sm:flex-row sm:items-center sm:justify-between">
-        <p className="text-xs text-on-surface-variant">
-          <span className="material-symbols-outlined inline text-sm align-middle text-tertiary">
-            bolt
-          </span>{" "}
-          Your booking goes <strong className="text-on-surface">directly to the owner</strong> — no middleman, no booking fee.
+          <ol className="mt-5 space-y-4">
+            <StepRail
+              num="01"
+              title="Your visit"
+              hint="Pick a date & slot"
+              done={step1Done}
+            />
+            <StepRail
+              num="02"
+              title="Reach you"
+              hint="Share your contact"
+              done={step2Done}
+            />
+            <StepRail
+              num="03"
+              title="Confirm"
+              hint="Agree to house rules"
+              done={step3Done}
+            />
+          </ol>
+
+          {/* Live summary card */}
+          <div className="mt-6 rounded-2xl border border-outline-variant bg-surface-lowest p-4 elevation-1">
+            <p className="font-sans text-[10px] uppercase tracking-luxe text-on-surface-variant flex items-center gap-2">
+              <span className="material-symbols-outlined text-sm text-sage">receipt_long</span>
+              Your booking so far
+            </p>
+            <dl className="mt-3 space-y-2 text-xs">
+              <SummaryRow icon="event" label="Date" value={bookingDate || "—"} />
+              <SummaryRow icon="schedule" label="Slot" value={slotLabel} />
+              <SummaryRow icon="person" label="Guest" value={guestName || "—"} />
+              <SummaryRow icon="mail" label="Email" value={email || "—"} />
+            </dl>
+          </div>
+        </aside>
+
+        {/* ── RIGHT: Form sections ── */}
+        <div className="p-6 sm:p-8 space-y-8">
+          {/* SECTION 01 — Your visit */}
+          <FormSection
+            num="01"
+            icon="event_available"
+            title="Your visit"
+            subtitle="When would you like to arrive?"
+          >
+            <Field
+              label="Booking date"
+              error={errors.bookingDate?.message}
+            >
+              <BookingDatePicker
+                value={bookingDate}
+                onChange={(val) => setValue("bookingDate", val, { shouldValidate: true })}
+                min={todayISO}
+                error={errors.bookingDate?.message}
+              />
+            </Field>
+
+            <Field
+              label="Available time slot"
+              error={errors.slot?.message || slotsError || undefined}
+              hint={
+                slotsLoading
+                  ? "Checking availability…"
+                  : availableSlots.length > 0
+                    ? `${availableSlots.length} slot${availableSlots.length === 1 ? "" : "s"} available${
+                        availableSlots[0]?.price ? ` · from $${availableSlots[0].price}` : ""
+                      }`
+                    : "Pick a date to see available slots."
+              }
+            >
+              {slotsLoading ? (
+                <div className="flex items-center gap-3 rounded-xl border border-outline-variant bg-surface-container-low px-4 py-3 text-sm text-on-surface-variant animate-pulse">
+                  <span className="material-symbols-outlined text-base text-outline animate-spin">
+                    hourglass_top
+                  </span>
+                  <span>Fetching available time slots…</span>
+                </div>
+              ) : availableSlots.length === 0 ? (
+                <div className="flex items-center gap-2 rounded-xl border border-outline-variant bg-surface-container-low px-3 py-2.5 text-sm text-on-surface-variant">
+                  <span className="material-symbols-outlined text-base text-outline">
+                    schedule
+                  </span>
+                  {slotsError ? "No slots available" : "No slots loaded yet"}
+                </div>
+              ) : (
+                <Select
+                  onValueChange={(v) => setValue("slot", v, { shouldValidate: true })}
+                >
+                  <SelectTrigger className="border-outline-variant bg-surface-container-low text-on-surface">
+                    <SelectValue placeholder="Choose a time slot" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {availableSlots.map((s) => (
+                      <SelectItem key={`${s.start}-${s.end}`} value={`${s.start}-${s.end}`}>
+                        <span className="flex items-center gap-2">
+                          <span className="material-symbols-outlined text-sm">schedule</span>
+                          {s.start} – {s.end}
+                          {s.price ? ` · $${s.price}` : ""}
+                        </span>
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              )}
+            </Field>
+          </FormSection>
+
+          {/* SECTION 02 — Reach you */}
+          <FormSection
+            num="02"
+            icon="person"
+            title="Reach you"
+            subtitle="Where can the owner reply?"
+          >
+            <Field label="Your name" error={errors.guestName?.message}>
+              <Input
+                {...register("guestName")}
+                autoComplete="name"
+                placeholder="e.g. Ayesha Khan"
+                className="border-outline-variant bg-surface-container-low text-on-surface"
+                aria-invalid={!!errors.guestName}
+              />
+            </Field>
+
+            <div className="grid min-w-0 gap-5 sm:grid-cols-2">
+              <Field label="Email" error={errors.email?.message}>
+                <Input
+                  type="email"
+                  {...register("email")}
+                  autoComplete="email"
+                  placeholder="you@email.com"
+                  className="border-outline-variant bg-surface-container-low text-on-surface"
+                  aria-invalid={!!errors.email}
+                />
+              </Field>
+              <Field label="Phone (optional)" error={errors.phone?.message}>
+                <Input
+                  type="tel"
+                  {...register("phone")}
+                  autoComplete="tel"
+                  placeholder="+92 3xx xxxxxxx"
+                  className="border-outline-variant bg-surface-container-low text-on-surface"
+                  aria-invalid={!!errors.phone}
+                />
+              </Field>
+            </div>
+
+            <Field
+              label="Anything you'd like the owner to know? (optional)"
+              error={errors.notes?.message}
+              hint="Allergies, dietary needs, celebration details, accessibility, arrival logistics…"
+            >
+              <Textarea
+                {...register("notes")}
+                rows={3}
+                className="border-outline-variant bg-surface-container-low text-on-surface resize-none"
+                placeholder="We're celebrating my mother's 70th birthday — she loves orchids and jazz…"
+              />
+            </Field>
+          </FormSection>
+
+          {/* SECTION 03 — House rules + acknowledge */}
+          <FormSection
+            num="03"
+            icon="gavel"
+            title="Confirm"
+            subtitle="Acknowledge the house rules"
+          >
+            <div className="rounded-2xl border border-outline-variant bg-secondary-container/25 p-5">
+              <ul className="grid gap-2 text-xs text-on-surface-variant sm:grid-cols-2">
+                {HOUSE_RULES.map((rule) => (
+                  <li key={rule} className="flex items-start gap-2">
+                    <span className="material-symbols-outlined text-sm text-sage mt-0.5">
+                      check_circle
+                    </span>
+                    {rule}
+                  </li>
+                ))}
+              </ul>
+
+              <label className="mt-4 flex cursor-pointer items-start gap-3 border-t border-outline-variant pt-4">
+                <Checkbox
+                  checked={agreeToHouseRules}
+                  onCheckedChange={(v) => setValue("agreeToHouseRules", v === true, { shouldValidate: true })}
+                  className="mt-0.5 border-outline data-[state=checked]:bg-sage data-[state=checked]:border-sage data-[state=checked]:text-on-primary"
+                />
+                <span className="text-sm text-on-surface-variant leading-relaxed">
+                  I have read and agree to the house rules above.
+                </span>
+              </label>
+              {errors.agreeToHouseRules?.message && (
+                <p role="alert" className="mt-2 flex items-center gap-1 text-xs text-error">
+                  <span className="material-symbols-outlined text-sm">error</span>
+                  {errors.agreeToHouseRules.message}
+                </p>
+              )}
+            </div>
+          </FormSection>
+
+          {/* Inline booking error */}
+          {bookingError && (
+            <div
+              role="alert"
+              className="flex items-start gap-2 rounded-2xl bg-error/10 p-4 text-sm text-error"
+            >
+              <span className="material-symbols-outlined text-base mt-0.5">error</span>
+              <span>{bookingError}</span>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* ── Sticky bottom action bar ── */}
+      <div className="sticky bottom-0 z-10 flex flex-col gap-3 border-t border-outline-variant bg-surface-lowest/95 px-6 py-4 backdrop-blur-md sm:flex-row sm:items-center sm:justify-between sm:px-8">
+        <p className="text-xs text-on-surface-variant flex items-center gap-1.5">
+          <span className="material-symbols-outlined text-sm text-sage">bolt</span>
+          Goes <strong className="text-on-surface">directly to the owner</strong> · no middleman, no booking fee.
         </p>
-        <CTAButton
+        <button
           type="submit"
-          size="lg"
           disabled={!canSubmit}
-          className={!canSubmit ? "opacity-60 cursor-not-allowed" : ""}
           title={
             !isValid
               ? "Fill in all required fields and agree to the house rules to enable submit"
@@ -662,6 +563,12 @@ export function GuestEnquiryForm() {
                 ? "Sending your booking…"
                 : "Send your booking to the owner"
           }
+          className={[
+            "inline-flex items-center justify-center gap-2 rounded-full px-7 py-3 font-sans text-xs uppercase tracking-luxe transition-all state-layer",
+            canSubmit
+              ? "bg-sage text-on-primary elevation-2 hover:elevation-3 hover:bg-moss"
+              : "bg-outline-variant text-on-surface-variant cursor-not-allowed opacity-70",
+          ].join(" ")}
         >
           {isSubmitting ? (
             <>
@@ -670,13 +577,108 @@ export function GuestEnquiryForm() {
             </>
           ) : (
             <>
-              <Icon name="send" className="text-base" />
+              <span className="material-symbols-outlined text-base">send</span>
               Send my booking
             </>
           )}
-        </CTAButton>
+        </button>
       </div>
     </form>
+  );
+}
+
+/* ────────────────────────────────────────────────────────────
+   Sub-components — step rail row, summary row, section, field
+   ──────────────────────────────────────────────────────────── */
+
+function StepRail({
+  num,
+  title,
+  hint,
+  done,
+}: {
+  num: string;
+  title: string;
+  hint: string;
+  done: boolean;
+}) {
+  return (
+    <li className="flex items-start gap-3">
+      <span
+        className={[
+          "flex h-9 w-9 shrink-0 items-center justify-center rounded-full font-display text-sm font-semibold transition-all",
+          done
+            ? "bg-sage text-on-primary ring-2 ring-sage/30 ring-offset-2 ring-offset-surface-container-low"
+            : "bg-surface-container-low text-on-surface-variant border border-outline-variant",
+        ].join(" ")}
+      >
+        {done ? (
+          <span className="material-symbols-outlined text-base">check</span>
+        ) : (
+          num
+        )}
+      </span>
+      <div className="min-w-0">
+        <p className={[
+          "font-sans text-sm leading-tight transition-colors",
+          done ? "text-on-surface" : "text-on-surface-variant",
+        ].join(" ")}>
+          {title}
+        </p>
+        <p className="font-sans text-[11px] text-on-surface-variant/70 leading-tight mt-0.5">
+          {hint}
+        </p>
+      </div>
+    </li>
+  );
+}
+
+function SummaryRow({ icon, label, value }: { icon: string; label: string; value: string }) {
+  return (
+    <div className="flex items-start gap-2">
+      <span className="material-symbols-outlined text-sm text-sage mt-0.5">{icon}</span>
+      <div className="min-w-0 flex-1">
+        <dt className="font-sans text-[9px] uppercase tracking-luxe text-on-surface-variant/70">
+          {label}
+        </dt>
+        <dd className="text-xs text-on-surface truncate font-medium">{value}</dd>
+      </div>
+    </div>
+  );
+}
+
+function FormSection({
+  num,
+  icon,
+  title,
+  subtitle,
+  children,
+}: {
+  num: string;
+  icon: string;
+  title: string;
+  subtitle: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <fieldset className="space-y-5 min-w-0">
+      <legend className="flex items-center gap-3">
+        <span className="flex h-10 w-10 items-center justify-center rounded-2xl bg-sage-soft/40 text-primary ring-1 ring-sage/30">
+          <span className="material-symbols-outlined text-lg">{icon}</span>
+        </span>
+        <span>
+          <span className="block font-sans text-[10px] uppercase tracking-luxe text-primary">
+            Step {num}
+          </span>
+          <span className="block font-display text-xl text-on-surface leading-tight">
+            {title}
+          </span>
+        </span>
+      </legend>
+      <p className="text-xs text-on-surface-variant -mt-2">{subtitle}</p>
+      <div className="h-px bg-outline-variant/60" />
+      {children}
+    </fieldset>
   );
 }
 

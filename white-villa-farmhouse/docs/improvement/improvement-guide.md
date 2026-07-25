@@ -1,4 +1,4 @@
-# Casa De Fazenda — Improvement Guide
+# White Villa FarmHouse — Improvement Guide
 
 > Concrete ideas for extending and improving the site after the initial
 > launch. Ordered by impact-to-effort ratio.
@@ -121,7 +121,7 @@ Help Google understand the property by adding `LodgingBusiness` schema:
     __html: JSON.stringify({
       "@context": "https://schema.org",
       "@type": "LodgingBusiness",
-      name: "Casa De Fazenda",
+      name: "White Villa FarmHouse",
       description: "Private luxury farmhouse sanctuary…",
       address: { /* … */ },
       geo: { /* … */ },

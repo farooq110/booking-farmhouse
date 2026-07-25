@@ -1,4 +1,4 @@
-# Casa De Fazenda — Setup Guide
+# White Villa FarmHouse — Setup Guide
 
 > Step-by-step instructions for a developer joining the project. By the end
 > of this guide you will have both the Next.js preview and the Vite

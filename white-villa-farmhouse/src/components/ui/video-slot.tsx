@@ -40,7 +40,7 @@ export function VideoSlot({
             movie
           </span>
           <span className="font-display text-lg text-on-surface-variant/50 tracking-wide-luxe">
-            Casa De Fazenda
+            White Villa FarmHouse
           </span>
         </div>
       </div>

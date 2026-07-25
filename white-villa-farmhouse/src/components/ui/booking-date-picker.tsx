@@ -76,13 +76,13 @@ export function BookingDatePicker({
           <span className="flex items-center gap-2 min-w-0">
             <span className={cn(
               "material-symbols-outlined text-base shrink-0 transition-colors",
-              selectedDate ? "text-tertiary" : "text-on-surface-variant"
+              selectedDate ? "text-primary" : "text-primary/70"
             )}>
               {selectedDate ? "event_available" : "event"}
             </span>
             <span className="truncate">{displayLabel}</span>
           </span>
-          <span className="material-symbols-outlined text-base text-on-surface-variant shrink-0">
+          <span className="material-symbols-outlined text-base text-primary/70 shrink-0">
             calendar_month
           </span>
         </button>

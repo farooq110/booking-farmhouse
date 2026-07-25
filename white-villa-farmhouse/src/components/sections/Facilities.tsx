@@ -42,12 +42,12 @@ const FACILITY_CATALOG: Facility[] = [
   //   highlights: ["Fenced & shaded", "Ages 2–12", "Visible from deck"],
   // },
   {
-    key: "dinningArea",
-    eyebrow: "For Shared Meals",
-    icon: "restaurant",
-    title: "Dining Area",
-    body: "Spacious indoor-outdoor dining area that seats the whole party. Perfect for family dinners, barbeque nights, and celebration meals served fresh from the kitchen.",
-    highlights: ["Indoor-outdoor seating", "Family-style layout", "BBQ-friendly"],
+    key: "barbiQArea",
+    eyebrow: "Smoke & Fire",
+    icon: "outdoor_grill",
+    title: "Barbi Q Area",
+    body: "An open-air barbeque terrace built around a custom stone pit and a wood-fired smoker, with teak prep counters, hanging skewer racks, and a starlit dining deck that seats up to 16 guests. Perfect for slow-grilled lamb, smoky kebabs, and long celebration feasts under the night sky.",
+    highlights: ["Custom stone BBQ pit", "Wood-fired smoker", "Teak prep counters", "Seats 16 under the stars"],
   },
   {
     key: "gaming",
@@ -93,7 +93,7 @@ export function Facilities() {
           <SectionLabel>More On The Estate</SectionLabel>
           <SectionHeading>
             Something for
-            <span className="text-moss-gradient italic"> every guest, every age.</span>
+            <span className="text-sage-gradient italic"> every guest, every age.</span>
           </SectionHeading>
           <p className="mt-6 text-base sm:text-lg text-on-surface-variant text-pretty leading-relaxed">
             Dedicated spaces for dining, gamers, and sporty guests — rain or shine.
@@ -101,70 +101,116 @@ export function Facilities() {
         </header>
 
         {/*
-          Responsive grid (no horizontal scroll):
-            < 640px  → 1 column (each card full width)
-            ≥ 640px  → 2 columns
-            ≥ 768px  → 3 columns
-          NOTE — do NOT use inline `style={{ gridTemplateColumns: ... }}` here.
-          An inline style would override the responsive Tailwind classes
-          (`sm:grid-cols-2`, `md:grid-cols-3`) on EVERY viewport, which is
-          exactly the bug that used to make this section render 3 columns
-          crammed onto a phone screen. The grid auto-flows correctly
-          because the catalogue caps at 3 visible items.
+          Alternating offset zig-zag layout.
+          Odd cards (index 0, 2, …): image LEFT, content RIGHT.
+          Even cards (index 1, 3, …): image RIGHT, content LEFT.
+          On mobile both stack with image on top.
+
+          Distinct from the previous uniform 3-column vertical grid:
+          this gives the section a rhythm and lets each facility get
+          the full row width for its photo + story.
         */}
-        <div
-          className="mt-12 sm:mt-16
-                     grid grid-cols-1 gap-6 sm:grid-cols-2 sm:gap-8 md:grid-cols-3"
-        >
-          {facilities.map((f, i) => (
-            <article
-              key={f.key}
-              className="group relative flex flex-col overflow-hidden rounded-3xl bg-surface-container-low text-left transition-all duration-500 hover:-translate-y-1 hover:elevation-3 elevation-1"
-            >
-              <MediaSlot
-                src={MEDIA.facilities[f.key] as StaticImageData | string}
-                alt={f.title}
-                aspectClass="aspect-[4/5]"
-                className="rounded-t-3xl"
-              />
+        <div className="mt-12 sm:mt-16 flex flex-col gap-8 sm:gap-12">
+          {facilities.map((f, i) => {
+            const imageLeft = i % 2 === 0;
+            return (
+              <article
+                key={f.key}
+                className="group relative grid grid-cols-1 overflow-hidden rounded-[1.5rem] border border-outline-variant bg-surface-lowest transition-all duration-500 hover:border-sage hover:elevation-3 elevation-1 md:grid-cols-2"
+              >
+                {/* ── Image side ── */}
+                <div
+                  className={[
+                    "relative overflow-hidden",
+                    imageLeft ? "md:order-1" : "md:order-2",
+                  ].join(" ")}
+                >
+                  <div className="relative h-56 sm:h-72 md:h-full">
+                    <MediaSlot
+                      src={MEDIA.facilities[f.key] as StaticImageData | string}
+                      alt={f.title}
+                      aspectClass="h-full w-full"
+                      className="h-full w-full transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-105"
+                    />
+                  </div>
 
-              <span className="absolute right-5 top-5 z-10 flex h-10 w-10 items-center justify-center rounded-full bg-surface-lowest/90 font-display text-base text-primary backdrop-blur-sm">
-                0{i + 1}
-              </span>
+                  {/* Sage accent bar — vertical strip on the inner edge */}
+                  <span
+                    className={[
+                      "pointer-events-none absolute top-0 bottom-0 w-1.5 bg-sage/55",
+                      imageLeft ? "right-0" : "left-0",
+                    ].join(" ")}
+                    aria-hidden="true"
+                  />
 
-              <div className="flex flex-1 flex-col p-5 sm:p-7">
-                <div className="mb-4 flex items-center gap-2">
-                  <span className="flex h-9 w-9 items-center justify-center rounded-full bg-primary-container">
-                    <span className="material-symbols-outlined text-lg text-on-primary-container">
-                      {f.icon}
-                    </span>
+                  {/* Index numeral — top-left of image */}
+                  <span className="pointer-events-none absolute left-4 top-4 flex h-10 w-10 items-center justify-center rounded-full bg-surface-lowest/90 font-display text-base font-semibold text-primary backdrop-blur-sm ring-1 ring-sage/30 elevation-1">
+                    {String(i + 1).padStart(2, "0")}
                   </span>
-                  <span className="font-sans text-[10px] uppercase tracking-luxe text-primary">
-                    {f.eyebrow}
+
+                  {/* Icon pill — bottom-left of image */}
+                  <span className="pointer-events-none absolute bottom-4 left-4 flex items-center gap-2 rounded-full bg-charcoal/55 px-3 py-1.5 backdrop-blur-sm">
+                    <span className="flex h-6 w-6 items-center justify-center rounded-full bg-sage text-on-primary">
+                      <span className="material-symbols-outlined text-sm">{f.icon}</span>
+                    </span>
+                    <span className="font-sans text-[10px] uppercase tracking-luxe text-cream">
+                      {f.eyebrow}
+                    </span>
                   </span>
                 </div>
 
-                <h3 className="font-display text-xl sm:text-2xl text-on-surface">{f.title}</h3>
-                <p className="mt-3 text-sm leading-relaxed text-on-surface-variant">
-                  {f.body}
-                </p>
+                {/* ── Content side ── */}
+                <div
+                  className={[
+                    "relative flex flex-col justify-center p-6 sm:p-8 md:p-10",
+                    imageLeft ? "md:order-2" : "md:order-1",
+                  ].join(" ")}
+                >
+                  {/* Decorative offset dot pattern in the corner — adds
+                      visual interest without competing with content. */}
+                  <span
+                    className={[
+                      "pointer-events-none absolute h-20 w-20 opacity-30",
+                      "bg-[radial-gradient(circle,oklch(0.55_0.085_145/0.45)_1.5px,transparent_1.5px)] [background-size:10px_10px]",
+                      imageLeft ? "right-4 top-4" : "left-4 top-4",
+                    ].join(" ")}
+                    aria-hidden="true"
+                  />
 
-                <ul className="mt-5 space-y-2 border-t border-outline-variant pt-5">
-                  {f.highlights.map((h) => (
-                    <li
-                      key={h}
-                      className="flex items-center gap-2 text-xs text-on-surface-variant"
-                    >
-                      <span className="material-symbols-outlined text-sm text-tertiary">
-                        check_circle
-                      </span>
-                      {h}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </article>
-          ))}
+                  <h3 className="font-display text-2xl sm:text-3xl text-on-surface">
+                    {f.title}
+                  </h3>
+                  <p className="mt-3 text-sm sm:text-base text-on-surface-variant leading-relaxed">
+                    {f.body}
+                  </p>
+
+                  {/* Highlights as inline chips */}
+                  <ul className="mt-5 flex flex-wrap gap-2">
+                    {f.highlights.map((h) => (
+                      <li
+                        key={h}
+                        className="inline-flex items-center gap-1.5 rounded-full border border-outline-variant bg-surface-container-low px-3 py-1.5 text-xs text-on-surface-variant"
+                      >
+                        <span className="material-symbols-outlined text-sm text-sage">
+                          check_circle
+                        </span>
+                        {h}
+                      </li>
+                    ))}
+                  </ul>
+
+                  {/* "In the estate" arrow — reveals on hover */}
+                  <div className="mt-6 flex items-center gap-2 font-sans text-[11px] uppercase tracking-luxe text-primary opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+                    <span className="h-px w-8 bg-sage" />
+                    <span>On the estate</span>
+                    <span className="material-symbols-outlined text-base text-sage">
+                      arrow_forward
+                    </span>
+                  </div>
+                </div>
+              </article>
+            );
+          })}
         </div>
       </div>
     </section>
