@@ -78,6 +78,13 @@ export function GuestEnquiryForm() {
   const [slotsLoading, setSlotsLoading] = useState(false);
   const [slotsError, setSlotsError] = useState<string | null>(null);
   const [bookingError, setBookingError] = useState<string | null>(null);
+  // ── API reachability flag ──
+  // Once we detect the API is unreachable (no-network / timeout / server),
+  // we stop making further calendar fetches so the user doesn't get
+  // repeated ERR_CONNECTION_REFUSED errors in the console every time
+  // they pick a different date. The form still works — it just shows
+  // "no slots" and tells the user to contact the owner directly.
+  const [apiUnreachable, setApiUnreachable] = useState(false);
 
   const {
     register,
@@ -117,8 +124,18 @@ export function GuestEnquiryForm() {
   const canSubmit = isValid && !isSubmitting && !slotsLoading;
 
   // ── Fetch calendar when serviceId + bookingDate change ──
+  // Skipped if we've already detected the API is unreachable — prevents
+  // repeated ERR_CONNECTION_REFUSED console errors every time the user
+  // picks a new date when the backend isn't running.
   useEffect(() => {
     if (!serviceId || !bookingDate) return;
+    if (apiUnreachable) {
+      // Show the "contact owner" message once, then stop trying.
+      setAvailableSlots([]);
+      setSlotsLoading(false);
+      setSlotsError("Booking service is offline. Please contact the owner directly by phone or email.");
+      return;
+    }
     let cancelled = false;
     let frame = requestAnimationFrame(() => {
       frame = 0;
@@ -143,8 +160,10 @@ export function GuestEnquiryForm() {
         const err = result.error;
         setSlotsLoading(false);
         setAvailableSlots([]);
+        // ── Mark API as unreachable so we don't retry on every date change ──
         if (err.kind === "no-network" || err.kind === "timeout" || err.kind === "server") {
-          setSlotsError(err.message);
+          setApiUnreachable(true);
+          setSlotsError("Booking service is offline. Please contact the owner directly by phone or email.");
           toast.error("Couldn't check availability", {
             description:
               err.kind === "no-network"
@@ -174,7 +193,7 @@ export function GuestEnquiryForm() {
       cancelled = true;
       if (frame) cancelAnimationFrame(frame);
     };
-  }, [serviceId, bookingDate, setValue]);
+  }, [serviceId, bookingDate, setValue, apiUnreachable]);
 
   // ── Submit ──
   const onSubmit = async (data: GuestEnquiryValues) => {
