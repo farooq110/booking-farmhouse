@@ -1,0 +1,73 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: var(--font-plus-jakarta), sans-serif;
+  --font-display: var(--font-barlow-condensed), sans-serif;
+
+  --color-tennis: #ccff00;
+  --color-tennis-dim: #a6cf00;
+  --color-cricket-red: #d93829;
+  --color-floodlight: #fbbf24;
+  --color-pitch-dark: #080c0a;
+  --color-pitch-card: #121815;
+  --color-pitch-border: #1d2822;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+*:focus-visible {
+  outline: 2px solid #ccff00;
+  outline-offset: 4px;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #080c0a;
+}
+::-webkit-scrollbar-thumb {
+  background: #1d2822;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #ccff00;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.gsap-reveal-pending {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.gsap-reveal-pending.reveal-slide-left-pending {
+  transform: translateX(-40px);
+}
+
+.reveal-fade-up {
+  opacity: 1 !important;
+  transform: translateY(0) !important;
+}
+
+.reveal-slide-left {
+  opacity: 1 !important;
+  transform: translateX(0) !important;
+}
